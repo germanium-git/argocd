@@ -1,0 +1,7 @@
+namespace: cert-manager
+
+cert-manager:
+  installCRDs: true
+  ingressShim:
+    defaultIssuerName: letsencrypt-prod
+    defaultIssuerKind: ClusterIssuer
