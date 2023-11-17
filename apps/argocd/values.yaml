@@ -21,6 +21,21 @@ argo-cd:
     insecure: false
     service:
       type: LoadBalancer
+    certificate:
+      domain: argocd.germanium.cz
+      duration: ""
+      enabled: true
+      issuer:
+        group: ""
+        kind: ClusterIssuer
+        name: letsencrypt-prod
+      privateKey:
+        algorithm: RSA
+        encoding: PKCS1
+        rotationPolicy: Never
+        size: 2048
+      renewBefore: ""
+      secretName: argocd-server-tls
   notifications:
     secret:
       # -- Whether helm chart creates notifications controller secret
