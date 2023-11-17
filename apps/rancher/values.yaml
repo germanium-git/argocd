@@ -1,2 +1,6 @@
 rancher:
   hostname: rancher.germanium.cz
+  ingress:
+    tls:
+      source: secret
+      secretName: rancher-germanium-cz-prod-tls
