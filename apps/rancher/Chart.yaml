@@ -7,5 +7,5 @@ appVersion: "1.0"
 
 dependencies:
   - name: rancher
-    version: 2.7.6
-    repository:  https://releases.rancher.com/server-charts/stable
+    version: 2.7.9
+    repository:  https://releases.rancher.com/server-charts/latest
