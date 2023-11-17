@@ -1,4 +1,20 @@
 argo-cd:
+  applicationSet:
+    certificate:
+      domain: argocd.germanium.cz
+      duration: ""
+      enabled: true
+      issuer:
+        group: ""
+        kind: ClusterIssuer
+        name: letsencrypt-prod
+      privateKey:
+        algorithm: RSA
+        encoding: PKCS1
+        rotationPolicy: Never
+        size: 2048
+      renewBefore: ""
+      secretName: argocd-application-controller-tls
   server:
     ingress:
       enabled: false
