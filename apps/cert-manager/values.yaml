@@ -14,4 +14,4 @@ cert-manager:
     - "1.1.1.1"
     - "9.9.9.9"
   global:
-    logLevel: 6
+    logLevel: 2
