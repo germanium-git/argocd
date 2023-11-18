@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: rancher-prod-cert
+  namespace: cattle-system
+spec:
+  secretName: rancher-germanium-cz-prod-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "rancher.germanium.cz"
+  dnsNames:
+  - "rancher.germanium.cz"
+  - "*.rancher.germanium.cz"
