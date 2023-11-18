@@ -9,6 +9,8 @@ kube-prometheus-stack:
       hosts:
       - grafana.germanium.cz
       ingressClassName: traefik
+      tls:
+       - secretName: grafana-germanium-cz-prod-tls
   prometheus:
     service:
       type: LoadBalancer
