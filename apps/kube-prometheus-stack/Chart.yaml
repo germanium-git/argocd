@@ -1,0 +1,11 @@
+apiVersion: v2
+name: prometheus-umbrella-chart
+description: An Umbrella Helm Chart to install Prometheus stack
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+dependencies:
+  - name: kube-prometheus-stack
+    version: 51.2.0
+    repository:  https://prometheus-community.github.io/helm-charts

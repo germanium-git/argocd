@@ -1,0 +1,14 @@
+kube-prometheus-stack:
+  alertmanager:
+    service:
+      type: LoadBalancer
+  grafana:
+    enabled: true
+    ingress:
+      enabled: true
+      hosts:
+      - grafana.germanium.cz
+      ingressClassName: traefik
+  prometheus:
+    service:
+      type: LoadBalancer
