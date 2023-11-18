@@ -4,3 +4,4 @@ rancher:
     tls:
       source: secret
       secretName: rancher-germanium-cz-prod-tls
+    ingressClassName: traefik
