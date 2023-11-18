@@ -5,3 +5,4 @@ rancher:
       source: secret
       secretName: rancher-germanium-cz-prod-tls
     ingressClassName: traefik
+  bootstrapPassword: rancher
