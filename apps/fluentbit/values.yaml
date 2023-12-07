@@ -1,0 +1,13 @@
+fluent-bit:
+  config:
+    ## https://docs.fluentbit.io/manual/pipeline/outputs
+    outputs: |
+      [OUTPUT]
+          name                   loki
+          match                  kube.*
+          host                   loki-gateway
+          port                   80
+          tls                    off
+          tls.verify             off
+          compress               gzip
+          auto_kubernetes_labels on
