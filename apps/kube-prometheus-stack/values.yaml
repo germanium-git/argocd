@@ -1,7 +1,37 @@
 kube-prometheus-stack:
+  ## Component scraping kube scheduler
+  kubeScheduler:
+    enabled: false
+  ## Component scraping etcd
+  kubeEtcd:
+    enabled: false
+  ## Component scraping kubeDns. Use either this or coreDns
+  kubeDns:
+    enabled: false
+  ## Component scraping coreDns. Use either this or kubeDns
+  coreDns:
+    enabled: false
+  ## Component scraping the kube controller manager
+  kubeControllerManager:
+    enabled: false
+  ## Component scraping the kubelet and kubelet-hosted cAdvisor
+  kubelet:
+    enabled: false
+  ## Component scraping kube proxy
+  kubeProxy:
+    enabled: false
   alertmanager:
     service:
       type: LoadBalancer
+    alertmanagerSpec:
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: nfs-client
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 20Gi
   grafana:
     enabled: true
     ingress:
