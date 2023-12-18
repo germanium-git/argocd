@@ -14,3 +14,12 @@ kube-prometheus-stack:
   prometheus:
     service:
       type: LoadBalancer
+    prometheusSpec:
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: nfs-client
+            accessModes: ["ReadWriteOnce"]
+            resources:
+              requests:
+                storage: 20Gi
