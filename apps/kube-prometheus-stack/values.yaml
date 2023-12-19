@@ -41,6 +41,18 @@ kube-prometheus-stack:
       ingressClassName: traefik
       tls:
        - secretName: grafana-germanium-cz-prod-tls
+    additionalDataSources:
+    - name: loki-gateway
+      access: proxy
+      basicAuth: false
+      editable: false
+      jsonData:
+        manageAlerts: false
+        maxLines: 1000
+      orgId: 1
+      type: loki
+      url: http://loki-gateway.logging.svc.cluster.local
+      version: 1
   prometheus:
     service:
       type: LoadBalancer
