@@ -14,12 +14,12 @@ kube-prometheus-stack:
   ## Component scraping the kube controller manager
   kubeControllerManager:
     enabled: false
-  ## Component scraping the kubelet and kubelet-hosted cAdvisor
-  kubelet:
-    enabled: false
   ## Component scraping kube proxy
   kubeProxy:
     enabled: false
+  ## Component scraping the kubelet and kubelet-hosted cAdvisor
+  kubelet:
+    enabled: true
   alertmanager:
     service:
       type: LoadBalancer
