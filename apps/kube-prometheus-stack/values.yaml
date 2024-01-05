@@ -53,6 +53,9 @@ kube-prometheus-stack:
       type: loki
       url: http://loki-gateway.logging.svc.cluster.local
       version: 1
+    serviceMonitor:
+      labels:
+        release: kube-prometheus-stack
   prometheus:
     service:
       type: LoadBalancer
