@@ -7,3 +7,7 @@ loki:
     auth_enabled: false
   singleBinary:
     replicas: 1
+  monitoring:
+    serviceMonitor:
+      labels:
+        release: kube-prometheus-stack
