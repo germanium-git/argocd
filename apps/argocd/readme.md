@@ -18,9 +18,20 @@ Check the value of the secret.
 kubectl get secret --namespace argocd argocd-notifications-secret -o jsonpath="{.data.slack-token}" | base64 -d
 ```
 
+## Web UI
+
+Navigate to https://argocd.germanium.cz/
+
+username: admin
+Use the decoded secrte as the password:
+
+```
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
 ## Notifications
 
-Add the following annotations to each app for which the notifications shoudl be generated in Slack. The value poiunts to the respective slack channel.
+Add the following annotations to each app for which the notifications should be generated in Slack. The value points to the respective slack channel.
 
 notifications.argoproj.io/subscribe.on-deployed.slack=argo
 notifications.argoproj.io/subscribe.on-health-degraded.slack=argo
