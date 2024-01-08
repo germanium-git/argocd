@@ -1,10 +1,15 @@
 # Cert Manager
 
+The certification manager instructs the provider Let's Encrypt to issue certificates. The DNS01 challenge is used to prove ownership of the domain operating in CloudFlare.
+
 ## Installation
 1. Let argo install the helm chart
 2. Configure K8s secret holding the CloudFlare token
 3. Configure Issuer
 4. Try to create a test certificate
+
+### Values.yaml
+https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
 
 
 ## Sealed Secret
@@ -31,7 +36,7 @@ Create two ClusterIssures for having the certificates signed by Let's Encrypt st
 `cluster-issuer-prod.yaml`
 `cluster-issuer-staging.yaml`
 
-## Cerrtificates
+## Certificates
 
 Try to create a certificates for **.germanium.cz* and **.local.germanium.cz*. by using the following manifests.
 
