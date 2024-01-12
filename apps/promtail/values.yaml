@@ -10,7 +10,12 @@ promtail:
         loadBalancerIP: 172.31.1.40
 
   config:
+    clients:
+    - url: http://loki-gateway/loki/api/v1/push  # default value
     snippets:
+      pipelineStages:
+      - static_labels:      # static labels to be added to the stream
+          cluster: orange
       extraScrapeConfigs: |
         # Add an additional scrape config for syslog
         - job_name: syslog
