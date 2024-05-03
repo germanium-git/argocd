@@ -1,0 +1,11 @@
+apiVersion: v2
+name: umbrella-chart
+description: An Umbrella Helm Chart
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+dependencies:
+  - name: awx-operator
+    version: 2.16.1
+    repository:  https://ansible.github.io/awx-operator/

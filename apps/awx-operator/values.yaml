@@ -1,0 +1,25 @@
+awx-operator:
+  AWX:
+    spec:
+      hostname: awx-operator
+    # configurations for external postgres instance
+    postgres:
+      enabled: false
+
+  customSecrets:
+    enabled: true
+    admin:
+      enabled: true
+      password: mysuperlongpassword
+      secretName: my-admin-password
+
+  customVolumes:
+    postgres:
+      enabled: true
+      hostPath: /data/postgres
+      storageClassName: local-storage
+    projects:
+      enabled: true
+      hostPath: /data/projects
+      size: 1Gi
+      storageClassName: local-storage
