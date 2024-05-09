@@ -5,6 +5,12 @@ awx-operator:
     # configurations for external postgres instance
     postgres:
       enabled: false
+      host: "pgsql-awx.pgsql.svc.cluster.local"
+      port: "5432"
+      dbName: postgres
+      username: postgres
+      sslmode: disable
+      type: unmanaged
 
   customSecrets:
     enabled: true
@@ -12,14 +18,3 @@ awx-operator:
       enabled: true
       password: mysuperlongpassword
       secretName: my-admin-password
-
-  customVolumes:
-    postgres:
-      enabled: true
-      hostPath: /data/postgres
-      storageClassName: local-storage
-    projects:
-      enabled: true
-      hostPath: /data/projects
-      size: 1Gi
-      storageClassName: local-storage
