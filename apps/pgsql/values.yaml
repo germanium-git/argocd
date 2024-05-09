@@ -7,3 +7,4 @@ postgresql:
       runAsGroup: 100
     persistence:
       storageClass: "nfs-pgsql"
+  nameOverride: "awx"
