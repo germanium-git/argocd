@@ -1,0 +1,9 @@
+postgresql:
+  primary:
+    podSecurityContext:
+      fsGroup: 100
+    containerSecurityContext:
+      runAsUser: 1024
+      runAsGroup: 100
+    persistence:
+      storageClass: "nfs-pgsql"

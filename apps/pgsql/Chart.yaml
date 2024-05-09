@@ -1,0 +1,11 @@
+apiVersion: v2
+name: pgsql
+description: An Umbrella Helm Chart for postgresql
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+dependencies:
+  - name: postgresql
+    version: 15.2.9
+    repository: https://charts.bitnami.com/bitnami
