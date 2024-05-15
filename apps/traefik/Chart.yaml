@@ -1,0 +1,11 @@
+apiVersion: v2
+name: nfs-pgsql
+description: An Umbrella Helm Chart for traefik
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+dependencies:
+  - name: traefik
+    version: 28.0.0
+    repository: https://traefik.github.io/charts

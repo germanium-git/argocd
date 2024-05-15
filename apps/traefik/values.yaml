@@ -1,0 +1,8 @@
+traefik:
+  ingressRoute:
+    dashboard:
+      enabled: false
+  providers:
+    kubernetesIngress:
+      publishedService:
+        enabled: true
