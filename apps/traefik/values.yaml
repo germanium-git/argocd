@@ -6,3 +6,7 @@ traefik:
     kubernetesIngress:
       publishedService:
         enabled: true
+  ports:
+    metrics:
+      expose:
+        default: true
