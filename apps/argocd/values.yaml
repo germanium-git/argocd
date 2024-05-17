@@ -278,9 +278,9 @@ argo-cd:
           - app-sync-succeeded
           when: app.status.operationState.phase in ['Succeeded']
 
-  configs:
-    secret:
-      # -- Create the argocd-secret
-      createSecret: true
-      githubSecret: "webhook.github.secret"
-      # -- Shared secret for authenticating GitLab webhook events
+  # configs:
+  #   secret:
+  #     # -- Create the argocd-secret
+  #     createSecret: true
+  #     githubSecret: "webhook.github.secret"
+  #     # -- Shared secret for authenticating GitLab webhook events
