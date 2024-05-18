@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-germanium-prod-cert
+  namespace: monitoring
+spec:
+  secretName:  grafana-germanium-cz-prod-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "grafana.germanium.cz"
+  dnsNames:
+  - "grafana.germanium.cz"
+  - "*.grafana.germanium.cz"
