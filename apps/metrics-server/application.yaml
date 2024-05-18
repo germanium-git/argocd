@@ -1,6 +1,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  annotations:
+    notifications.argoproj.io/subscribe.on-deployed.slack: argo
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-running.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: argo
   name: metrics-server
   namespace: argocd
 spec:
@@ -13,5 +20,5 @@ spec:
       valueFiles:
       - values.yaml
     path: apps/metrics-server
-    repoURL: git@github.com:germanium-git/argocd.git
+    repoURL: https://github.com/germanium-git/argocd
     targetRevision: HEAD
