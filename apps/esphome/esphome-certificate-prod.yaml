@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: esphome-prod-cert
+  namespace: esphome
+spec:
+  secretName: esphome-germanium-cz-prod-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "esphome.germanium.cz"
+  dnsNames:
+  - "esphome.germanium.cz"
+  - "*.esphome.germanium.cz"
