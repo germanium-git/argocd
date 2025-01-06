@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: homeassist-prod-cert
+  namespace: homeassist
+spec:
+  secretName: homeassist-germanium-cz-prod-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "homeassist.germanium.cz"
+  dnsNames:
+  - "homeassist.germanium.cz"
+  - "*.homeassist.germanium.cz"
