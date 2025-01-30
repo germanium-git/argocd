@@ -1,4 +1,8 @@
 metallb:
   speaker:
+    logLevel: warn
     frr:
       enabled: false
+
+  controller:
+    logLevel: warn
