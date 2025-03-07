@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: esphome-staging-cert
+  namespace: esphome
+spec:
+  secretName: esphome-germanium-cz-staging-tls
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "esphome.germanium.cz"
+  dnsNames:
+  - "esphome.germanium.cz"
+  - "*.esphome.germanium.cz"
