@@ -1,48 +1,49 @@
-hostPort:
-  # Enable 'hostPort' or not
-  enabled: false
-  port: 8123
+home-assistant:
+  hostPort:
+    # Enable 'hostPort' or not
+    enabled: false
+    port: 8123
 
-# Specifies if the containers should be started in hostNetwork mode.
-#
-# Required for use auto-discovery feature of Home Assistant
-hostNetwork: false
+  # Specifies if the containers should be started in hostNetwork mode.
+  #
+  # Required for use auto-discovery feature of Home Assistant
+  hostNetwork: false
 
-persistence:
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 5Gi
-  storageClass: "nfs-client"
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    storageClass: "nfs-client"
 
-# Ingress settings
-ingress:
-  # Enable ingress for home assistant
-  enabled: true
-  className: "traefik"
-  labels: {}
-  annotations:
-    {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: homeassist.germanium.cz
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls:
-   - secretName: homeassist-germanium-cz-prod-tls
-     hosts:
-       - homeassist.germanium.cz
+  # Ingress settings
+  ingress:
+    # Enable ingress for home assistant
+    enabled: true
+    className: "traefik"
+    labels: {}
+    annotations:
+      {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: homeassist.germanium.cz
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+    - secretName: homeassist-germanium-cz-prod-tls
+      hosts:
+        - homeassist.germanium.cz
 
-# Configuration for Home Assistant
-configuration:
-  # Enable or disable the configuration setup for Home Assistant
-  enabled: true
-  # Force init will merge the current configuration file with the default configuration on every start
-  # This is useful when you want to ensure that the configuration file is always up to date
-  forceInit: true
-  # List of trusted proxies in the format of CIDR notation in a case of using a reverse proxy
-  # Here is the list of the most common private IP ranges, use your list of possible trusted proxies, usually, it's the IP of the reverse proxy
-  trusted_proxies:
-    - 172.31.1.0/24      # Add the IP address of your cluster CIDR
-    - 10.244.0.0/16      # Add the IP address of your cluster CIDR
+  # Configuration for Home Assistant
+  configuration:
+    # Enable or disable the configuration setup for Home Assistant
+    enabled: true
+    # Force init will merge the current configuration file with the default configuration on every start
+    # This is useful when you want to ensure that the configuration file is always up to date
+    forceInit: true
+    # List of trusted proxies in the format of CIDR notation in a case of using a reverse proxy
+    # Here is the list of the most common private IP ranges, use your list of possible trusted proxies, usually, it's the IP of the reverse proxy
+    trusted_proxies:
+      - 172.31.1.0/24      # Add the IP address of your cluster CIDR
+      - 10.244.0.0/16      # Add the IP address of your cluster CIDR
