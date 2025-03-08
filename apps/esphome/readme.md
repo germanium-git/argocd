@@ -1,5 +1,10 @@
 # ESPHome
 
+https://artifacthub.io/packages/helm/alekc/esphome
+
+https://gitlab.com/alexander-chernov/helm/home-assistant
+
+
 ## Installation 
 
 ### Certificate
