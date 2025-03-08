@@ -3,9 +3,9 @@ name: umbrella-chart
 description: An Umbrella Helm Chart
 type: application
 version: 0.1.0
-appVersion: "2025.3.1"
+appVersion: "2025.3.0"
 
 dependencies:
   - name: home-assistant
-    version: 0.2.112
+    version: 0.2.111
     repository:  http://pajikos.github.io/home-assistant-helm-chart/
