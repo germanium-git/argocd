@@ -1,0 +1,11 @@
+apiVersion: v2
+name: umbrella-chart
+description: An Umbrella Helm Chart
+type: application
+version: 0.1.0
+appVersion: "4.0.1"
+
+dependencies:
+  - name: nginx-ingress
+    version: 2.0.1
+    repository:  https://helm.nginx.com/stable
