@@ -1,2 +1,3 @@
 nginx-ingres:
-  fullnameOverride: "nginx-ingress"
+  controller:
+    logLevel: debug
