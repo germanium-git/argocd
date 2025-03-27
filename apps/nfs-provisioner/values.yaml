@@ -8,8 +8,8 @@ nfs-subdir-external-provisioner:
       - noatime     # Prevents the system from updating the access time (atime) on files every time they are read. Improves performance by reducing disk I/O.
       - nolock      # Since NFSv4 has built-in locking, the nolock option is often used for performance reasons or if locking is causing issues.
       - tcp         # Better for large file transfers because it avoids UDP packet loss.
-      - uid=1077
-      - gid=1077
+      # - uid=1077
+      # - gid=1077
   storageClass:
     create: true
     defaultClass: false
