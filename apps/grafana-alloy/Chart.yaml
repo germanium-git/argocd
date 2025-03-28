@@ -1,0 +1,11 @@
+apiVersion: v2
+name: grafana-alloy
+description: An Umbrella Helm Chart to install Grafna Alloy
+type: application
+version: 1.7.4
+appVersion: "1.0"
+
+dependencies:
+  - name: grafana/alloy
+    version: 0.12.5
+    repository: https://grafana.github.io/helm-charts

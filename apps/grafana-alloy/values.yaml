@@ -1,0 +1,31 @@
+service:
+  # -- Service type
+  type: LoadBalancer
+
+alloy:
+  configMap:
+    content: |
+      loki.source.syslog "syslog_receiver" {
+        listener {
+          address = "0.0.0.0:514"
+          protocol = "tcp"
+          labels = { protocol = "tcp_syslog" }
+        }
+        listener {
+          address = "0.0.0.0:514"
+          protocol = "udp"
+          labels = { protocol = "udp_syslog" }
+        }
+        forward_to = [loki.write.local.receiver]
+      }
+
+      loki.write "local" {
+        endpoint {
+          url = "http://loki-gateway.logging.svc.cluster.local/loki/api/v1/push"
+        }
+      }
+  extraPorts:
+  - name: "syslog-udp"
+    port: 514
+    targetPort: 514
+    protocol: "UDP"
