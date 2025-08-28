@@ -1,0 +1,14 @@
+sources:
+  - ingress
+
+policy: sync
+
+provider:
+  name: cloudflare
+
+env:
+  - name: CF_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-external-dns
+        key: apiKey
