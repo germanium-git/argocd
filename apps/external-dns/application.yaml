@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cloudflare
+  name: external-dns
   namespace: argocd
   annotations:
     notifications.argoproj.io/subscribe.on-deployed.slack: argo
@@ -19,7 +19,7 @@ spec:
     helm:
       valueFiles:
       - values.yaml
-    path: apps/cloudflare
+    path: apps/external-dns
     repoURL: https://github.com/germanium-git/argocd
     targetRevision: HEAD
   syncPolicy:

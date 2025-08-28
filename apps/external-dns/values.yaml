@@ -1,14 +1,15 @@
-sources:
-  - ingress
+external-dns:
+  sources:
+    - ingress
 
-policy: sync
+  policy: sync
 
-provider:
-  name: cloudflare
+  provider:
+    name: cloudflare
 
-env:
-  - name: CF_API_TOKEN
-    valueFrom:
-      secretKeyRef:
-        name: cloudflare-external-dns
-        key: apiKey
+  env:
+    - name: CF_API_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: cloudflare-external-dns
+          key: apiKey
