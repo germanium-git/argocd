@@ -1,0 +1,15 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  creationTimestamp: null
+  name: argo-tunnel-settings
+  namespace: cloudflare
+spec:
+  encryptedData:
+    tunnel-config.json: AgDA4du4AnGBjqse2j9JbDzXfviy62IsDs/jK46aaZ1hmzSABkzxxLgoey5xnJnkpircThde0AiMqfi8P7MBAC/qWtfVvSvZNGX+m7QOHwzbSDfxfHsucNh9pl76VwMWJAFyDnu0d1pO59JZNlvfDwqo0PPiN2VL6KB+hCNwsl5iUJw5Cdp1j5/ObCtdIIP4mngfxt46RWQdGCetKaV3wL0UqQlJSpLC4yhdbAFKwWq2Cp4cd4goo0uJQsrGO1g0MMUO/NDrV5xbp7lvia2T82J7RlGjHptTaEdy1HL+JbDY2T4JLQn1eKLkJEQz0evcafG0e+Qu3mD5LTMjdISoK9UEd+vznB7vUGYQ8QUtQMi62fg4HUyQVwEgg2uo5HuPKTp9jwJTtqe2/HzPn3/y7IVtJzwSfGH66fruWuyqhrVM2ilxPbgNxLd9N+xFnVNUiKyEHIXo2aJtRtnETPhYKYEwN+S1TqojyY4tHXSxhRkdjdBi8Ry4hbqfy2QTglvW6PurBswLgRjSAkrEYVmEpKvoEhZei+MJCl1j4d9HLJzhhRoGArZX7UgYBWDhy5nLma3T5odaw/YPgL30ssl5DbGxn6mzwyfwAA/2chnyWgijyCsqhFm+1s9yzxQNp2EqAHnVMQwpbkOrHSAxmyytfhelKlJPyaet6HWCPCgr5hRWNhDZ8rFBmKWsr00jMU1/XCnKu7PL10Uy4ovQfOZbjp1NS2GdiYqMQlMJsydIjVo+6dIhykYkiSZypu9T+w4q4Gqp/fp2TuiuqYLxTqlJIJtJJ1yZBTadBUe7A21mVaXNxtUat15iBVBDUUQKOtymrOxQP+VebhMM604tGISSFPJilfKG71tyncrYOcVH4qR9311Sz4RujDbfyV9OMpIDTq2jCstEmkdCvjvTlVdr0RyYK0ylWRCiFTgCPg1/tBix
+  template:
+    metadata:
+      creationTimestamp: null
+      name: argo-tunnel-settings
+      namespace: cloudflare

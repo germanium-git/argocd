@@ -1,0 +1,16 @@
+image:
+  repository: cloudflare/cloudflared
+  tag: "2025.8.1"
+  imagePullPolicy: IfNotPresent
+local:
+  enabled: true
+  auth:
+    tunnelID: f14686c6-e006-4076-9b65-a84d93aa2e01
+    tunnelName:	k8s-ingress
+    existingSecret: argo-tunnel-settings
+  ingress:
+    - hostname: "*.germanium.cz"
+      service: "https://traefik.traefik.svc.cluster.local:443"
+      originRequest:
+        noTLSVerify: true
+    - service: http_status:404
