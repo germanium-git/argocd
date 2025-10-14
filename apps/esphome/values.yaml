@@ -57,4 +57,8 @@ esphome:
     fsGroup: 1000
   securityContext:
     runAsUser: 1002
-    runAsNonRoot: true
+    runAsGroup: 1000
+    fsGroup: 1000
+    capabilities:
+      add:
+        - NET_RAW
