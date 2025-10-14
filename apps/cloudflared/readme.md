@@ -41,6 +41,11 @@ kubectl create secret generic argo-tunnel-settings \
 
 ## Install Cloudflared with Helm
 
+All deployment parameters can be found at 
+
+https://artifacthub.io/packages/helm/kubitodev/cloudflared#deployment-parameters
+
+
 ```
 helm upgrade cloudflared kubitodev/cloudflared --namespace cloudflare --values values.yaml
 ```
