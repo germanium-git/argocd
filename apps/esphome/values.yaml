@@ -41,7 +41,8 @@ esphome:
 
   persistence:
     enabled: true
-    storageClass: "local-storage-orange3"
+    # storageClass: "local-storage-orange3"
+    storageClass:  "nfs-atlas"
     existingClaim: ""
     accessMode: ReadWriteOnce
     size: 800Mi
@@ -49,3 +50,11 @@ esphome:
     additionalVolumes: []
     # if you need any additional volume mounts, you can define them here
     additionalMounts: []
+
+  podSecurityContext:
+    runAsUser: 1002
+    runAsGroup: 1000
+    fsGroup: 1000
+  securityContext:
+    runAsUser: 1002
+    runAsNonRoot: true
