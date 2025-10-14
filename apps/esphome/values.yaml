@@ -60,5 +60,5 @@ esphome:
     runAsGroup: 1000
     fsGroup: 1000
     capabilities:
-      add:
-        - NET_RAW
+      add: ["NET_RAW"]
+     
