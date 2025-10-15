@@ -62,3 +62,8 @@ esphome:
   #   capabilities:
   #     add: ["NET_RAW"]
      
+  securityContext:                # podSecurityContext
+    runAsUser: 0                  # run as root
+    runAsGroup: 0
+    fsGroup: 1000                 # ensures NFS files get GID 1000
+    
