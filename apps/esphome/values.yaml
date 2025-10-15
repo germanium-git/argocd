@@ -51,14 +51,14 @@ esphome:
     # if you need any additional volume mounts, you can define them here
     additionalMounts: []
 
-  podSecurityContext:
-    runAsUser: 1002
-    runAsGroup: 1000
-    fsGroup: 1000
-  securityContext:
-    runAsUser: 1002
-    runAsGroup: 1000
-    fsGroup: 1000
-    capabilities:
-      add: ["NET_RAW"]
+  # podSecurityContext:
+  #   runAsUser: 1002
+  #   runAsGroup: 1000
+  #   fsGroup: 1000
+  # securityContext:
+  #   runAsUser: 1002
+  #   runAsGroup: 1000
+  #   fsGroup: 1000
+  #   capabilities:
+  #     add: ["NET_RAW"]
      
