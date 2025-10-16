@@ -1,0 +1,13 @@
+nfs-subdir-external-provisioner:
+  nfs:
+    server: 172.31.1.6
+    path: /volume1/nfs
+  storageClass:
+    create: true
+    defaultClass: false
+    name: nfs-atlas
+    archiveOnDelete: false
+  podSecurityContext:
+    runAsUser: 1002       # k8s-orange user
+    runAsGroup: 1000      # k8s-nfs-group
+    fsGroup: 1000         # k8s-nfs-group

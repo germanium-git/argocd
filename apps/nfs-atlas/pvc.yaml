@@ -1,0 +1,44 @@
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: atlas-nfs-test-pv
+#   namespace: nfs-atlas
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   persistentVolumeReclaimPolicy: Delete
+#   nfs:
+#     server: 172.31.1.6
+#     path: /volume1/nfs
+#   storageClassName: nfs-atlas
+
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: atlas-nfs-test-pvc
+#   namespace: nfs-atlas
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 100Mi
+#   storageClassName: nfs-atlas  
+#   volumeName: atlas-nfs-test-pv
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: atlas-nfs-test-pvc
+  namespace: nfs-atlas
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
+  storageClassName: nfs-atlas
