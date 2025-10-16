@@ -8,7 +8,7 @@ metadata:
     notifications.argoproj.io/subscribe.on-sync-running.slack: argo
     notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: argo
     notifications.argoproj.io/subscribe.on-sync-succeeded.slack: argo
-  name: nfs-pgsql
+  name: nfs-atlas
   namespace: argocd
 spec:
   destination:
