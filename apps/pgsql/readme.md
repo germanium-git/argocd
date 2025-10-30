@@ -1,8 +1,8 @@
 # Postgres
 
-## StorageClass
+## StorageClass nfs-pgsql
 
-The storagClass `nfs-pgsql` is used in this case which allows the container run with the security context using the values below to chnage ownership of the nfs mounted volume.
+The storagClass `nfs-pgsql` is used in this case which allows the container run with the security context using the values below to change ownership of the nfs mounted volume.
 SecurityContext parameters
 - runAsUser: 1024
 - runAsGroup: 100
@@ -31,3 +31,16 @@ kubectl run pgsql-postgresql-client \
     --env="PGPASSWORD=$POSTGRES_PASSWORD" \
     --command -- psql --host pgsql-awx -U postgres -d postgres -p 5432
 ```
+
+## StorageClass nfs-atlas
+
+### Synology as a NFS Server
+  podSecurityContext:
+    runAsUser: 1002       # k8s-orange user
+    runAsGroup: 1000      # k8s-nfs-group
+    fsGroup: 1000         # k8s-nfs-group
+
+
+## Helm
+
+https://artifacthub.io/packages/helm/bitnami/postgresql

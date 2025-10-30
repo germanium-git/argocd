@@ -1,10 +1,10 @@
 postgresql:
   primary:
     podSecurityContext:
-      fsGroup: 100
+      fsGroup: 1000
     containerSecurityContext:
-      runAsUser: 1024
-      runAsGroup: 100
+      runAsUser: 1002
+      runAsGroup: 1000
     persistence:
-      storageClass: "nfs-pgsql"
+      storageClass: "nfs-atlas"
   nameOverride: "awx"
