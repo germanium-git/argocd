@@ -3,6 +3,8 @@
 ## Releases
 https://github.com/ansible/awx-operator/releases
 
+https://github.com/ansible-community/awx-operator-helm/blob/main/charts/awx-operator/values.yaml
+
 ## Postgres
 
 ### External database
