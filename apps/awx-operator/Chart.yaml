@@ -7,5 +7,5 @@ appVersion: "1.0"
 
 dependencies:
   - name: awx-operator
-    version: 2.16.1
-    repository:  https://ansible.github.io/awx-operator/
+    version: 3.2.0
+    repository:  https://ansible-community.github.io/awx-operator-helm/
