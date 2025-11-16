@@ -11,14 +11,20 @@ metadata:
   name: cert-manager
   namespace: argocd
 spec:
-  destination:
-    namespace: cert-manager
-    server: https://kubernetes.default.svc
   project: default
-  source:
+  
+  sources:
+  - repoURL: https://github.com/germanium-git/argocd
+    path: apps/cert-manager
     helm:
       valueFiles:
       - values.yaml
-    path: apps/cert-manager
-    repoURL: https://github.com/germanium-git/argocd
-    targetRevision: HEAD
+      targetRevision: HEAD
+
+  - repoURL: https://github.com/germanium-git/argocd/
+    path: apps/cert-manager/addons
+    targetRevision: main
+
+  destination:
+    namespace: cert-manager
+    server: https://kubernetes.default.svc
