@@ -16,10 +16,11 @@ spec:
   sources:
   - repoURL: https://github.com/germanium-git/argocd
     path: apps/cert-manager
+    targetRevision: HEAD
     helm:
       valueFiles:
       - values.yaml
-      targetRevision: HEAD
+
 
   - repoURL: https://github.com/germanium-git/argocd/
     path: apps/cert-manager/addons
