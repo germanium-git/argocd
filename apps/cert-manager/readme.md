@@ -8,6 +8,12 @@ The certification manager instructs the provider Let's Encrypt to issue certific
 3. Configure Issuer
 4. Try to create a test certificate
 
+
+### Helm
+
+https://artifacthub.io/packages/helm/cert-manager/cert-manager
+
+
 ### Values.yaml
 https://github.com/cert-manager/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
 
