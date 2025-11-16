@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cert-manager-alerts
+  namespace: cert-manager
+spec:
+  groups:
+    - name: cert-manager
+      rules:
+        - alert: CertManagerCertExpiringSoon
+          expr: |
+            certmanager_certificate_expiration_timestamp_seconds - time() < 86400
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Certificate expiring soon"
+            description: "A certificate managed by cert-manager will expire in less than 24 hours."
+
+        - alert: CertManagerCertificateRenewalErrors
+          expr: increase(certmanager_certificate_renewal_errors_total[1h]) > 0
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Cert-manager renewal errors detected"
+            description: "Certificates have renewal errors in the last hour."
