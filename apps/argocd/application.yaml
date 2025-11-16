@@ -15,19 +15,19 @@ spec:
     namespace: argocd
     server: https://kubernetes.default.svc
   project: default
+  
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
 
-sources:
-  - repoURL: https://github.com/germanium-git/argocd
-    path: apps/argocd
-    targetRevision: HEAD
-    helm:
-      valueFiles:
-      - values.yaml
+  sources:
+    - repoURL: https://github.com/germanium-git/argocd
+      path: apps/argocd
+      targetRevision: HEAD
+      helm:
+        valueFiles:
+        - values.yaml
 
-  - repoURL: https://github.com/germanium-git/argocd/
-    path: apps/argocd/addons
-    targetRevision: main
-
-syncPolicy:
-  syncOptions:
-  - CreateNamespace=true
+    - repoURL: https://github.com/germanium-git/argocd/
+      path: apps/argocd/addons
+      targetRevision: main
