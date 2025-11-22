@@ -4,6 +4,13 @@ home-assistant:
     enabled: false
     port: 8123
 
+  # Pod security context settings
+  podSecurityContext:             # podSecurityContext
+    runAsUser: 0                  # run as root
+    runAsGroup: 0
+    fsGroup: 1000                 # ensures NFS files get GID 1000
+
+
   # Specifies if the containers should be started in hostNetwork mode.
   #
   # Required for use auto-discovery feature of Home Assistant
@@ -13,7 +20,7 @@ home-assistant:
     enabled: true
     accessMode: ReadWriteOnce
     size: 5Gi
-    storageClass: "nfs-client"
+    storageClass: "nfs-atlas"
 
   # Ingress settings
   ingress:
