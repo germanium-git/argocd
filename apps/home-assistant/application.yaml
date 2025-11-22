@@ -11,17 +11,24 @@ metadata:
     notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: argo
     notifications.argoproj.io/subscribe.on-sync-succeeded.slack: argo
 spec:
-  destination:
-    namespace: homeassist
-    server: https://kubernetes.default.svc
   project: default
-  source:
+  
+  sources:
+  - repoURL: https://github.com/germanium-git/argocd
+    path: apps/home-assistant
+    targetRevision: HEAD
     helm:
       valueFiles:
       - values.yaml
-    path: apps/home-assistant
-    repoURL: https://github.com/germanium-git/argocd
-    targetRevision: HEAD
+
+  - repoURL: https://github.com/germanium-git/argocd/
+    path: apps/home-assistant/addons
+    targetRevision: main
+
+  destination:
+    namespace: homeassist
+    server: https://kubernetes.default.svc
+  
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
