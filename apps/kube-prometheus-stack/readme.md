@@ -1,5 +1,8 @@
 # Prometheus stack
 
+
+
+
 ```
 kubectl create secret generic alertmanager-slack-notification -n monitoring \
     --from-literal=slack_webhook=https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX \
