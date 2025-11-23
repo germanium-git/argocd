@@ -7,6 +7,9 @@ loki:
     auth_enabled: false
   singleBinary:
     replicas: 1
+  simpleScalable:
+    enabled: false
+    replicas: 0
   monitoring:
     serviceMonitor:
       labels:
