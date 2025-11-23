@@ -10,6 +10,7 @@ loki:
   simpleScalable:
     enabled: false
     replicas: 0
+  deploymentMode: SingleBinary
   monitoring:
     serviceMonitor:
       labels:
