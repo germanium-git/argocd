@@ -17,7 +17,7 @@ jupyterhub:
 
   prePuller:
     hook:
-      annotations:
+      daemonsetAnnotations:
         argocd.argoproj.io/sync-options: SkipAwait=true
 
   singleuser:
