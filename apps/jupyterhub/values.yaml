@@ -1,0 +1,14 @@
+jupyterhub:
+  hub:
+    db:
+      pvc:
+        storageClassName: nfs-atlas
+
+    podSecurityContext:
+      runAsNonRoot: true
+      fsGroup: 1000
+
+  singleuser:
+    storage:
+      dynamic:
+        storageClass: nfs-atlas
