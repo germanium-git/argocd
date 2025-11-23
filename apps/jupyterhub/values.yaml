@@ -5,6 +5,7 @@ jupyterhub:
     db:
       pvc:
         storageClassName: nfs-atlas
+        storage: 8Gi
 
     podSecurityContext:
       runAsNonRoot: true
@@ -13,7 +14,7 @@ jupyterhub:
   proxy:
     annotations:
       argocd.argoproj.io/health: "Healthy"
-      
+
 
   singleuser:
     storage:
