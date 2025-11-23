@@ -27,11 +27,16 @@ kube-prometheus-stack:
       storage:
         volumeClaimTemplate:
           spec:
-            storageClassName: nfs-client
+            storageClassName: nfs-atlas
             accessModes: ["ReadWriteOnce"]
             resources:
               requests:
                 storage: 20Gi
+      securityContext:
+        # runAsGroup: 2000
+        # runAsNonRoot: true
+        # runAsUser: 1000
+        fsGroup: 2000
   grafana:
     enabled: true
     ingress:
@@ -63,8 +68,13 @@ kube-prometheus-stack:
       storageSpec:
         volumeClaimTemplate:
           spec:
-            storageClassName: nfs-client
+            storageClassName: nfs-atlas
             accessModes: ["ReadWriteOnce"]
             resources:
               requests:
                 storage: 20Gi
+      securityContext:
+        # runAsGroup: 2000
+        # runAsNonRoot: true
+        # runAsUser: 1000
+        fsGroup: 1000 
