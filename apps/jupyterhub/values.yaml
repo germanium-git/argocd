@@ -1,8 +1,14 @@
 jupyterhub:
   hub:
+    annotations:
+      argocd.argoproj.io/health: "Healthy"
     db:
       pvc:
         storageClassName: nfs-atlas
+  
+  proxy:
+    annotations:
+      argocd.argoproj.io/health: "Healthy"
 
     podSecurityContext:
       runAsNonRoot: true

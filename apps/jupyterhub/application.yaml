@@ -21,9 +21,9 @@ spec:
       valueFiles:
       - values.yaml
 
-  - repoURL: https://github.com/germanium-git/argocd/
-    path: apps/jupyterhub/addons
-    targetRevision: main
+  # - repoURL: https://github.com/germanium-git/argocd/
+  #   path: apps/jupyterhub/addons
+  #   targetRevision: main
 
   destination:
     namespace: jhub
