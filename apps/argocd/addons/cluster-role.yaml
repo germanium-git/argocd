@@ -1,0 +1,8 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: argocd-applicationset-controller
+rules:
+  - apiGroups: ["", "apps", "batch", "policy", "networking.k8s.io", "rbac.authorization.k8s.io"]
+    resources: ["*"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
