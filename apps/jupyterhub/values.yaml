@@ -1,7 +1,7 @@
 jupyterhub:
   hub:
-    annotations:
-      argocd.argoproj.io/health: "Healthy"
+    # annotations:
+    #   argocd.argoproj.io/health: "Healthy"
     db:
       pvc:
         storageClassName: nfs-atlas
@@ -11,10 +11,14 @@ jupyterhub:
       runAsNonRoot: true
       fsGroup: 1000
   
-  proxy:
-    annotations:
-      argocd.argoproj.io/health: "Healthy"
+  # proxy:
+  #   annotations:
+  #     argocd.argoproj.io/health: "Healthy"
 
+  prePuller:
+    hook:
+      annotations:
+        argocd.argoproj.io/sync-options: SkipAwait=true
 
   singleuser:
     storage:
