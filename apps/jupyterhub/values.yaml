@@ -15,10 +15,12 @@ jupyterhub:
   #   annotations:
   #     argocd.argoproj.io/health: "Healthy"
 
+
   prePuller:
     hook:
-      daemonsetAnnotations:
-        argocd.argoproj.io/sync-options: SkipAwait=true
+      enabled: false
+    continuous:
+      enabled: false
 
   singleuser:
     storage:
