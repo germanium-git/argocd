@@ -1,13 +1,14 @@
 # Prometheus stack
 
-
-
-
 ```
 kubectl create secret generic alertmanager-slack-notification -n monitoring \
     --from-literal=slack_webhook=https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX \
     --dry-run=client -o yaml | kubeseal --format=yaml > prometheus-slack-sealedsecret.yaml
 ```
+
+## Helm
+
+All values - https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
 
 
 ## Grafana
