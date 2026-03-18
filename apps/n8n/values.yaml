@@ -1,4 +1,6 @@
 n8n:
+  encryptionKey: "702a8b1640741fb75099a74d7a0d792c"
+
   timezone: Europe/Prague
 
   main:
