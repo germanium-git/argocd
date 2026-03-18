@@ -2,6 +2,9 @@ n8n:
   timezone: Europe/Prague
 
   main:
+    extraEnvVars:
+      N8N_TRUST_PROXY: "true"
+
     persistence:
       enabled: true
       storageClass: "nfs-atlas"
