@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: n8n-prod-cert
+  namespace: n8n
+spec:
+  secretName: n8n-germanium-cz-prod-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "n8n.germanium.cz"
+  dnsNames:
+    - "n8n.germanium.cz"

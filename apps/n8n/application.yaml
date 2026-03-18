@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: n8n
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-deployed.slack: argo
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-running.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack: argo
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/germanium-git/argocd
+      path: apps/n8n
+      targetRevision: HEAD
+      helm:
+        valueFiles:
+          - values.yaml
+    - repoURL: https://github.com/germanium-git/argocd
+      path: apps/n8n/addons
+      targetRevision: main
+  destination:
+    namespace: n8n
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
