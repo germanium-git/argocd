@@ -5,10 +5,10 @@ loki:
     storage:
       type: 'filesystem'
     auth_enabled: false
-    server:
-      log_level: warn
   singleBinary:
     replicas: 1
+    extraArgs:
+      - -log.level=warn
   simpleScalable:
     enabled: false
   deploymentMode: SingleBinary
