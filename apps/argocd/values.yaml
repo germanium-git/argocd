@@ -37,6 +37,7 @@ argo-cd:
       renewBefore: ""
       secretName: argocd-server-tls
   notifications:
+    logLevel: warn
     secret:
       # -- Whether helm chart creates notifications controller secret
       create: false
