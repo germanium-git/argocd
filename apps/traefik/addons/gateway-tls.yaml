@@ -4,6 +4,8 @@ kind: Gateway
 metadata:
   name: traefik-gateway-tls
   namespace: traefik
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "172.31.1.34"
 spec:
   gatewayClassName: traefik
   listeners:
