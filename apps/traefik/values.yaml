@@ -6,12 +6,16 @@ traefik:
     kubernetesIngress:
       publishedService:
         enabled: true
-  experimental:
     kubernetesGateway:
       enabled: true
-      namespacePolicy: All
-      annotations:
-        external-dns.alpha.kubernetes.io/target: "172.31.1.34"
+  gateway:
+    enabled: true
+    annotations:
+      external-dns.alpha.kubernetes.io/target: "172.31.1.34"
+    listeners:
+      web:
+        namespacePolicy:
+          from: All
   ports:
     metrics:
       expose:
