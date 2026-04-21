@@ -8,6 +8,9 @@ external-dns:
   provider:
     name: cloudflare
 
+  extraArgs:
+    - --default-targets=172.31.1.34
+
   env:
     - name: CF_API_TOKEN
       valueFrom:
