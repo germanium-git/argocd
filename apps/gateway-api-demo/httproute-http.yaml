@@ -7,13 +7,19 @@ metadata:
   namespace: gw-api-demo
 spec:
   parentRefs:
-    - name: traefik-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: traefik-gateway
       namespace: traefik
       sectionName: web
   hostnames:
     - "gwapidemo.germanium.cz"
   rules:
-    - filters:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
         - type: RequestRedirect
           requestRedirect:
             scheme: https
