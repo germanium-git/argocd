@@ -26,7 +26,7 @@ spec:
 
   - repoURL: https://github.com/germanium-git/argocd
     path: apps/traefik/addons
-    targetRevision: main
+    targetRevision: HEAD
 
   syncPolicy:
     syncOptions:
