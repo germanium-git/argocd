@@ -445,20 +445,11 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "certmanager_clusterissuer_ready_status{condition=\"True\"}",
+              "expr": "max by (issuer_name) (certmanager_clusterissuer_ready_status{condition=\"True\"})",
               "instant": true,
               "range": false,
               "legendFormat": "{{issuer_name}}",
               "refId": "A"
-            }
-          ],
-          "transformations": [
-            {
-              "id": "labelsToFields",
-              "options": {
-                "mode": "value",
-                "valueLabel": "issuer_name"
-              }
             }
           ]
         },
