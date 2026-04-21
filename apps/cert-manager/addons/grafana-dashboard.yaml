@@ -425,7 +425,8 @@ data:
                 }
               ],
               "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]},
-              "unit": "short"
+              "unit": "short",
+              "displayNameFromLabel": "issuer_name"
             },
             "overrides": []
           },
