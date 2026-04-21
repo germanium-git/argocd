@@ -437,14 +437,15 @@ data:
             "justifyMode": "center",
             "orientation": "horizontal",
             "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-            "textMode": "value_and_name"
+            "textMode": "value_and_name",
+            "text": {"titleSize": 20, "valueSize": 32}
           },
           "title": "ClusterIssuer Status",
           "type": "stat",
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "certmanager_clusterissuer_ready_status",
+              "expr": "certmanager_clusterissuer_ready_status{condition=\"True\"}",
               "instant": true,
               "range": false,
               "legendFormat": "{{issuer_name}}",
