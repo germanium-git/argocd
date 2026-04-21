@@ -425,8 +425,7 @@ data:
                 }
               ],
               "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]},
-              "unit": "short",
-              "displayNameFromLabel": "issuer_name"
+              "unit": "short"
             },
             "overrides": []
           },
@@ -451,6 +450,15 @@ data:
               "range": false,
               "legendFormat": "{{issuer_name}}",
               "refId": "A"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "labelsToFields",
+              "options": {
+                "mode": "value",
+                "valueLabel": "issuer_name"
+              }
             }
           ]
         },
