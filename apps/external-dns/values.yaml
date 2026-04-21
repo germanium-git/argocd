@@ -1,6 +1,7 @@
 external-dns:
   sources:
     - ingress
+    - gateway-httproute
 
   policy: sync
 
