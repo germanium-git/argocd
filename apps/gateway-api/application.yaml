@@ -1,8 +1,7 @@
-
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: traefik
+  name: gateway-api
   namespace: argocd
   annotations:
     notifications.argoproj.io/subscribe.on-deployed.slack: argo
@@ -13,21 +12,14 @@ metadata:
     notifications.argoproj.io/subscribe.on-sync-succeeded.slack: argo
 spec:
   destination:
-    namespace: traefik
+    namespace: default
     server: https://kubernetes.default.svc
   project: default
-  sources:
-  - repoURL: https://github.com/germanium-git/argocd
-    path: apps/traefik
+  source:
+    path: apps/gateway-api/addons
+    repoURL: https://github.com/germanium-git/argocd
     targetRevision: HEAD
-    helm:
-      valueFiles:
-      - values.yaml
-
-  - repoURL: https://github.com/germanium-git/argocd
-    path: apps/traefik/addons
-    targetRevision: main
-
   syncPolicy:
     syncOptions:
-    - CreateNamespace=true
+    - ServerSideApply=true
+    - Replace=true
