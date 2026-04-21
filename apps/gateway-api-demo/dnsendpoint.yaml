@@ -1,0 +1,13 @@
+---
+apiVersion: externaldns.k8s.io/v1alpha1
+kind: DNSEndpoint
+metadata:
+  name: gwapidemo
+  namespace: gw-api-demo
+spec:
+  endpoints:
+    - dnsName: gwapidemo.germanium.cz
+      recordType: A
+      recordTTL: 180
+      targets:
+        - 172.31.1.34
