@@ -425,8 +425,7 @@ data:
                 }
               ],
               "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]},
-              "unit": "short",
-              "displayNameFromLabel": "issuer_name"
+              "unit": "short"
             },
             "overrides": []
           },
@@ -446,9 +445,9 @@ data:
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "certmanager_clusterissuer_ready_status{condition=\"True\"}",
-              "instant": true,
-              "range": false,
+              "expr": "max by (issuer_name) (certmanager_clusterissuer_ready_status{condition=\"True\"})",
+              "instant": false,
+              "range": true,
               "legendFormat": "{{issuer_name}}",
               "refId": "A"
             }
