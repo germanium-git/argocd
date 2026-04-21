@@ -446,8 +446,8 @@ data:
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
               "expr": "max by (issuer_name) (certmanager_clusterissuer_ready_status{condition=\"True\"})",
-              "instant": true,
-              "range": false,
+              "instant": false,
+              "range": true,
               "legendFormat": "{{issuer_name}}",
               "refId": "A"
             }
