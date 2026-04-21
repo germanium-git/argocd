@@ -10,10 +10,6 @@ traefik:
     kubernetesGateway:
       enabled: true
       namespacePolicy: All
-      certificate:
-        group: ""
-        kind: Secret
-        name: wildcard-germanium-cz-tls
   ports:
     metrics:
       expose:
