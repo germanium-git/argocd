@@ -35,6 +35,8 @@ spec:
     kind: CustomResourceDefinition
     jsonPointers:
     - /status
+    jqPathExpressions:
+    - .spec.versions[].selectableFields
 
   syncPolicy:
     syncOptions:
