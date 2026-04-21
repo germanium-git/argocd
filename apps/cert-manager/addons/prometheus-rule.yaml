@@ -18,7 +18,7 @@ spec:
             description: "A certificate managed by cert-manager will expire in less than 24 hours."
 
         - alert: CertManagerCertificateRenewalErrors
-          expr: increase(certmanager_certificate_renewal_errors_total[1h]) > 0
+          expr: increase(certmanager_controller_sync_error_count{controller=~"certificates-.*"}[1h]) > 0
           for: 10m
           labels:
             severity: critical
