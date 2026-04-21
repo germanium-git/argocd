@@ -448,7 +448,7 @@ data:
               "expr": "certmanager_clusterissuer_ready_status{condition=\"True\"}",
               "instant": false,
               "range": true,
-              "legendFormat": "{{issuer_name}}",
+              "legendFormat": "{{name}}",
               "refId": "A"
             }
           ]
