@@ -234,7 +234,6 @@ data:
           "title": "Certificate Expiration",
           "transformations": [
             {"id": "merge", "options": {}},
-            {"id": "labelsToFields", "options": {"mode": "columns", "valueLabel": ""}},
             {
               "id": "filterFieldsByName",
               "options": {"include": {"names": ["name", "namespace", "issuer_name", "Value #A", "Value #B"]}}
@@ -264,6 +263,7 @@ data:
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
               "expr": "certmanager_certificate_expiration_timestamp_seconds * 1000",
+              "format": "table",
               "instant": true,
               "range": false,
               "legendFormat": "",
@@ -272,6 +272,7 @@ data:
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
               "expr": "(certmanager_certificate_expiration_timestamp_seconds - time()) / 86400",
+              "format": "table",
               "instant": true,
               "range": false,
               "legendFormat": "",
@@ -345,7 +346,6 @@ data:
           "title": "Certificate Lifecycle (Issue → Renewal → Expiry)",
           "transformations": [
             {"id": "merge", "options": {}},
-            {"id": "labelsToFields", "options": {"mode": "columns", "valueLabel": ""}},
             {
               "id": "filterFieldsByName",
               "options": {"include": {"names": ["name", "namespace", "issuer_name", "Value #A", "Value #B", "Value #C"]}}
@@ -377,6 +377,7 @@ data:
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
               "expr": "certmanager_certificate_not_before_timestamp_seconds * 1000",
+              "format": "table",
               "instant": true,
               "range": false,
               "legendFormat": "",
@@ -385,6 +386,7 @@ data:
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
               "expr": "certmanager_certificate_renewal_timestamp_seconds * 1000",
+              "format": "table",
               "instant": true,
               "range": false,
               "legendFormat": "",
@@ -393,6 +395,7 @@ data:
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
               "expr": "certmanager_certificate_expiration_timestamp_seconds * 1000",
+              "format": "table",
               "instant": true,
               "range": false,
               "legendFormat": "",
@@ -422,11 +425,12 @@ data:
                 }
               ],
               "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]},
-              "unit": "short"
+              "unit": "short",
+              "displayNameFromLabel": "issuer_name"
             },
             "overrides": []
           },
-          "gridPos": {"h": 5, "w": 24, "x": 0, "y": 27},
+          "gridPos": {"h": 8, "w": 24, "x": 0, "y": 27},
           "id": 10,
           "options": {
             "colorMode": "background",
@@ -434,14 +438,15 @@ data:
             "justifyMode": "center",
             "orientation": "horizontal",
             "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
-            "textMode": "value_and_name"
+            "textMode": "value_and_name",
+            "text": {"titleSize": 20, "valueSize": 32}
           },
           "title": "ClusterIssuer Status",
           "type": "stat",
           "targets": [
             {
               "datasource": {"type": "prometheus", "uid": "prometheus"},
-              "expr": "certmanager_clusterissuer_ready_status",
+              "expr": "certmanager_clusterissuer_ready_status{condition=\"True\"}",
               "instant": true,
               "range": false,
               "legendFormat": "{{issuer_name}}",
@@ -451,7 +456,7 @@ data:
         },
         {
           "collapsed": false,
-          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 32},
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 35},
           "id": 11,
           "title": "Controller Activity",
           "type": "row"
@@ -487,7 +492,7 @@ data:
             },
             "overrides": []
           },
-          "gridPos": {"h": 9, "w": 12, "x": 0, "y": 33},
+          "gridPos": {"h": 9, "w": 12, "x": 0, "y": 36},
           "id": 12,
           "options": {
             "legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true},
@@ -537,7 +542,7 @@ data:
             },
             "overrides": []
           },
-          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 33},
+          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 36},
           "id": 13,
           "options": {
             "legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true},
@@ -558,7 +563,7 @@ data:
         },
         {
           "collapsed": false,
-          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 42},
+          "gridPos": {"h": 1, "w": 24, "x": 0, "y": 45},
           "id": 14,
           "title": "ACME HTTP Activity",
           "type": "row"
@@ -594,7 +599,7 @@ data:
             },
             "overrides": []
           },
-          "gridPos": {"h": 9, "w": 12, "x": 0, "y": 43},
+          "gridPos": {"h": 9, "w": 12, "x": 0, "y": 46},
           "id": 15,
           "options": {
             "legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true},
@@ -652,7 +657,7 @@ data:
             },
             "overrides": []
           },
-          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 43},
+          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 46},
           "id": 16,
           "options": {
             "legend": {"calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true},
