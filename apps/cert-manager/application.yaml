@@ -34,7 +34,9 @@ spec:
   - group: apiextensions.k8s.io
     kind: CustomResourceDefinition
     jsonPointers:
-    - /spec/preserveUnknownFields
+    - /status
+    jqPathExpressions:
+    - .spec.versions[].selectableFields
 
   syncPolicy:
     syncOptions:
