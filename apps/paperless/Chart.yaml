@@ -1,0 +1,11 @@
+apiVersion: v2
+name: umbrella-chart
+description: An Umbrella Helm Chart for paperless-ngx
+type: application
+version: 0.1.0
+appVersion: "2.14.7"
+
+dependencies:
+  - name: paperless-ngx
+    version: 0.24.1
+    repository: https://charts.gabe565.com
