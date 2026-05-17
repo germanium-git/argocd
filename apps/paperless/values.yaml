@@ -1,6 +1,8 @@
 paperless-ngx:
   global:
     imageRegistry: registry.bitnami.com
+    security:
+      allowInsecureImages: true
 
   env:
     TZ: Europe/Prague
