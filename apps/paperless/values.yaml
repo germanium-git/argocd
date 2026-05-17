@@ -1,12 +1,16 @@
 paperless-ngx:
-  global:
-    imageRegistry: registry.bitnami.com
-    security:
-      allowInsecureImages: true
-
   env:
     TZ: Europe/Prague
     PAPERLESS_ADMIN_USER: admin
+    PAPERLESS_DBHOST: paperless-postgres
+    PAPERLESS_DBNAME: paperless
+    PAPERLESS_DBUSER: paperless
+    PAPERLESS_DBPASS:
+      valueFrom:
+        secretKeyRef:
+          name: paperless-postgresql
+          key: password
+    PAPERLESS_REDIS: redis://paperless-redis:6379
 
   envFrom:
     - secretRef:
@@ -52,19 +56,7 @@ paperless-ngx:
       size: 5Gi
 
   postgresql:
-    enabled: true
-    auth:
-      existingSecret: paperless-postgresql
-      username: paperless
-      database: paperless
-    primary:
-      persistence:
-        enabled: true
-        storageClass: nfs-atlas
-        size: 5Gi
+    enabled: false
 
   redis:
-    enabled: true
-    master:
-      persistence:
-        enabled: false
+    enabled: false
