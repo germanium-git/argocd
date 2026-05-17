@@ -1,4 +1,7 @@
 paperless-ngx:
+  global:
+    imageRegistry: registry.bitnami.com
+
   env:
     TZ: Europe/Prague
     PAPERLESS_ADMIN_USER: admin
