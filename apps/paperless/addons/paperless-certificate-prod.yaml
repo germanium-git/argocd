@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: paperless-prod-cert
+  namespace: paperless
+spec:
+  secretName: paperless-germanium-cz-prod-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "paperless.germanium.cz"
+  dnsNames:
+    - "paperless.germanium.cz"

@@ -1,0 +1,65 @@
+paperless-ngx:
+  env:
+    TZ: Europe/Prague
+    PAPERLESS_ADMIN_USER: admin
+
+  envFrom:
+    - secretRef:
+        name: paperless-secrets
+
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+        external-dns.alpha.kubernetes.io/hostname: paperless.germanium.cz
+        external-dns.alpha.kubernetes.io/target: f14686c6-e006-4076-9b65-a84d93aa2e01.cfargotunnel.com
+      ingressClassName: traefik
+      hosts:
+        - host: paperless.germanium.cz
+          paths:
+            - path: /
+      tls:
+        - secretName: paperless-germanium-cz-prod-tls
+          hosts:
+            - paperless.germanium.cz
+
+  persistence:
+    data:
+      enabled: true
+      storageClass: nfs-atlas
+      accessMode: ReadWriteOnce
+      size: 10Gi
+    media:
+      enabled: true
+      storageClass: nfs-atlas
+      accessMode: ReadWriteOnce
+      size: 20Gi
+    export:
+      enabled: true
+      storageClass: nfs-atlas
+      accessMode: ReadWriteOnce
+      size: 5Gi
+    consume:
+      enabled: true
+      storageClass: nfs-atlas
+      accessMode: ReadWriteOnce
+      size: 5Gi
+
+  postgresql:
+    enabled: true
+    auth:
+      existingSecret: paperless-postgresql
+      username: paperless
+      database: paperless
+    primary:
+      persistence:
+        enabled: true
+        storageClass: nfs-atlas
+        size: 5Gi
+
+  redis:
+    enabled: true
+    master:
+      persistence:
+        enabled: false
