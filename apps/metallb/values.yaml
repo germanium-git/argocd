@@ -2,7 +2,7 @@ metallb:
   speaker:
     logLevel: warn
     frr:
-      enabled: true
+      enabled: false
 
   controller:
     logLevel: warn
