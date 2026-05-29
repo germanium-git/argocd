@@ -8,3 +8,12 @@ metadata:
 spec:
   addresses:
   - 172.31.1.30-172.31.1.49
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: bgp-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 10.100.0.0/24

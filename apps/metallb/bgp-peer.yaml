@@ -1,0 +1,10 @@
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: srx-peer
+  namespace: metallb-system
+spec:
+  myASN: 64501
+  peerASN: 65100
+  peerAddress: 172.31.1.1
