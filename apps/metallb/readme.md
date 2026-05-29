@@ -15,6 +15,13 @@ Helm umbrella chart deploying MetalLB 0.16.1 on the orange K8s cluster in dual L
 - Peer: SRX300 at `172.31.1.1` (irb.777, trust zone)
 - BGP neighbors (one per node): `172.31.1.50`, `172.31.1.51`, `172.31.1.52`
 - Backend: `frrk8s` (default in 0.16.x — do **not** set `speaker.frr.enabled: true`)
+- ECMP active — multiple nodes advertise each service IP, SRX selects best path
+
+## BFD & Graceful Restart
+
+- **BFD profile `fast-bfd`**: 1000ms intervals, multiplier 3 → ~3s failure detection (vs 30s BGP hold-timer)
+- **Graceful restart** enabled on SRX (`protocols bgp graceful-restart`) and FRR (frrk8s default) — routes preserved in the SRX during planned node/speaker restarts
+- BFD runs over `irb.777` (trust zone); all 3 sessions Up
 
 ## ArgoCD
 
