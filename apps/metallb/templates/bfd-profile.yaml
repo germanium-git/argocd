@@ -1,0 +1,11 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: BFDProfile
+metadata:
+  name: fast-bfd
+  namespace: metallb-system
+spec:
+  receiveInterval: 1000
+  transmitInterval: 1000
+  detectMultiplier: 3
+  echoMode: false

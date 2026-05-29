@@ -8,3 +8,4 @@ spec:
   myASN: 64501
   peerASN: 65100
   peerAddress: 172.31.1.1
+  bfdProfile: fast-bfd
