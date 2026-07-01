@@ -1,0 +1,72 @@
+# values.prod.yaml
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hosts:
+    - host: mcp.germanium.cz
+      paths:
+        - /
+  annotations:
+    # Streaming-friendly settings for ingress-nginx
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header X-Accel-Buffering no;
+
+env:
+  - name: LOG_LEVEL
+    value: info
+  # Consume tokens/certs via Secrets mounted by the chart or extra manifests
+  # - name: AUTH_TOKEN
+  #   valueFrom: # see your chart’s pattern for secretRefs
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+
+probes:
+  startup:
+    httpGet:
+      path: /health
+      port: 8080
+    failureThreshold: 30
+    periodSeconds: 10
+  liveness:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 20
+    periodSeconds: 10
+  readiness:
+    httpGet:
+      path: /health
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 5
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 75
