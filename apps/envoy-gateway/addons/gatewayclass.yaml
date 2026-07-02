@@ -1,0 +1,9 @@
+---
+# Envoy Gateway does not auto-create a default GatewayClass (unlike Traefik
+# and Istio), so it's created explicitly here.
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: envoy-gateway
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller

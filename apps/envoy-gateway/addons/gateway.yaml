@@ -1,0 +1,18 @@
+---
+# Smoke-test Gateway for evaluating Envoy Gateway as a Gateway API engine.
+# Envoy Gateway will provision an Envoy proxy Deployment+Service (type
+# LoadBalancer, via MetalLB) for this Gateway automatically.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-gateway
+  namespace: envoy-gateway-system
+spec:
+  gatewayClassName: envoy-gateway
+  listeners:
+    - name: web
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All

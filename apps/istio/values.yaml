@@ -1,0 +1,11 @@
+# Gateway API only: no sidecar injection is enabled on any namespace, and no
+# istio-ingressgateway workload is deployed. Istiod's built-in Gateway API
+# deployment controller auto-provisions a Deployment+Service per Gateway
+# resource with gatewayClassName: istio.
+base:
+  global:
+    istioNamespace: istio-system
+
+istiod:
+  global:
+    istioNamespace: istio-system

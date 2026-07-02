@@ -1,0 +1,17 @@
+# gateway-helm's embedded `crds` subchart installs both the Gateway API core
+# CRDs and Envoy Gateway's own CRDs unconditionally (they live in a Helm
+# crds/ folder, which is not gated by values). Disable it entirely here and
+# use the standalone gateway-crds-helm chart below instead, which gates each
+# CRD group behind its own values flag so we can install only Envoy
+# Gateway's own CRDs and let apps/gateway-api-crds own the core Gateway API
+# CRDs.
+gateway-helm:
+  crds:
+    enabled: false
+
+gateway-crds-helm:
+  crds:
+    gatewayAPI:
+      enabled: false
+    envoyGateway:
+      enabled: true

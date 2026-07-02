@@ -1,3 +1,10 @@
+# Traefik
+
+Gateway API CRDs used to be bundled by this chart, but are now owned solely by
+`apps/gateway-api-crds` (the Helm source here sets `skipCrds: true`) so that Istio
+and Envoy Gateway can share the same CRDs without version conflicts. See
+`apps/gateway-api-crds/readme.md`.
+
 # Password protection for the dashboard
 
 The secret used in the middleware to protect from unauthorized access cosists of two parts, the <username>:<md5 encoded passord>

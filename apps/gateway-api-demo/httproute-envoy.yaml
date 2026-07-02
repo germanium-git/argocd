@@ -1,0 +1,27 @@
+---
+# Smoke test for the Envoy Gateway engine (apps/envoy-gateway) — same
+# whoami backend as the Traefik demo, routed through a distinct hostname.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: whoami-envoy
+  namespace: gw-api-demo
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: envoy-gateway
+      namespace: envoy-gateway-system
+      sectionName: web
+  hostnames:
+    - "gwapidemo-envoy.germanium.cz"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: whoami
+          port: 80

@@ -1,0 +1,18 @@
+---
+# Smoke-test Gateway for evaluating Istio as a Gateway API engine. Istio's
+# Gateway API deployment controller will provision a Deployment+Service
+# (type LoadBalancer, via MetalLB) for this Gateway automatically.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: istio-gateway
+  namespace: istio-system
+spec:
+  gatewayClassName: istio
+  listeners:
+    - name: web
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
