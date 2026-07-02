@@ -1,9 +1,11 @@
 ---
 # Istio's Gateway API deployment controller auto-provisions a new proxy
 # Deployment+Service per Gateway resource (gatewayClassName: istio), each
-# labeled istio.io/gateway-name. A static ServiceMonitor can't target these
-# since they don't exist until a Gateway is created, so this PodMonitor
-# matches any such pod in any namespace instead.
+# labeled gateway.networking.k8s.io/gateway-name (the standard Gateway API
+# label, not an Istio-specific one - confirmed on the live pod, not
+# istio.io/gateway-name as originally assumed). A static ServiceMonitor
+# can't target these since they don't exist until a Gateway is created, so
+# this PodMonitor matches any such pod in any namespace instead.
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -14,7 +16,7 @@ metadata:
 spec:
   selector:
     matchExpressions:
-    - key: istio.io/gateway-name
+    - key: gateway.networking.k8s.io/gateway-name
       operator: Exists
   namespaceSelector:
     any: true
