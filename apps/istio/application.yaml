@@ -37,10 +37,15 @@ spec:
   # istiod injects its own CA bundle into these webhooks at runtime; the
   # chart renders them with it empty, so ArgoCD would otherwise fight istiod
   # over this field forever (self-heal already hit its retry limit on this).
+  # istiod's ValidatingWebhookConfigurations also start as failurePolicy:
+  # Ignore in the chart (bootstrap-safe default) and get flipped to Fail by
+  # istiod once it considers itself ready to enforce validation - also
+  # expected drift, not something to fight over.
   - group: admissionregistration.k8s.io
     kind: ValidatingWebhookConfiguration
     jqPathExpressions:
     - '.webhooks[]?.clientConfig.caBundle'
+    - '.webhooks[]?.failurePolicy'
   - group: admissionregistration.k8s.io
     kind: MutatingWebhookConfiguration
     jqPathExpressions:
