@@ -19,7 +19,11 @@ spec:
   namespaceSelector:
     any: true
   podMetricsEndpoints:
-  - portNumber: 15090
+  # targetPort accepts a plain integer and is deprecated in favor of a named
+  # `port`, but the cluster's installed Prometheus Operator CRD (from 2023,
+  # predates kube-prometheus-stack's CRD upgrades) doesn't support the newer
+  # `portNumber` field.
+  - targetPort: 15090
     path: /stats/prometheus
     interval: 15s
     scheme: http
