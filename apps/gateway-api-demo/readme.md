@@ -1,9 +1,21 @@
 # gateway-api-demo
 
-Demo application showcasing Kubernetes Gateway API features using Traefik as the gateway engine.
+Demo application showcasing Kubernetes Gateway API features. The same `whoami`
+backend is routed through three different gateway engines for side-by-side
+evaluation.
 
-**Namespace:** `gw-api-demo`  
-**URL:** https://gwapidemo.germanium.cz
+**Namespace:** `gw-api-demo`
+
+| Engine | URL | HTTPRoute | Gateway |
+|--------|-----|-----------|---------|
+| Traefik | https://gwapidemo.germanium.cz | `httproute-http.yaml`, `httproute-https.yaml` | `traefik/traefik-gateway(-tls)` |
+| Istio | http://gwapidemo-istio.germanium.cz | `httproute-istio.yaml` | `istio-system/istio-gateway` (`apps/istio/addons/gateway.yaml`) |
+| Envoy Gateway | http://gwapidemo-envoy.germanium.cz | `httproute-envoy.yaml` | `envoy-gateway-system/envoy-gateway` (`apps/envoy-gateway/addons/gateway.yaml`) |
+
+The Istio and Envoy Gateway routes are plain HTTP smoke tests (no TLS termination,
+no filters) — just enough to confirm each engine actually routes traffic. See
+`apps/istio/readme.md` and `apps/envoy-gateway/readme.md` for how those engines are
+installed.
 
 ## What it demonstrates
 

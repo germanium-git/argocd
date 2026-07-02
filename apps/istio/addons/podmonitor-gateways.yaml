@@ -1,0 +1,25 @@
+---
+# Istio's Gateway API deployment controller auto-provisions a new proxy
+# Deployment+Service per Gateway resource (gatewayClassName: istio), each
+# labeled istio.io/gateway-name. A static ServiceMonitor can't target these
+# since they don't exist until a Gateway is created, so this PodMonitor
+# matches any such pod in any namespace instead.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: istio-gateways
+  namespace: istio-system
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchExpressions:
+    - key: istio.io/gateway-name
+      operator: Exists
+  namespaceSelector:
+    any: true
+  podMetricsEndpoints:
+  - portNumber: 15090
+    path: /stats/prometheus
+    interval: 15s
+    scheme: http

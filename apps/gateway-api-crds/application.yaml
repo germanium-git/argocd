@@ -1,8 +1,7 @@
-
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: traefik
+  name: gateway-api-crds
   namespace: argocd
   annotations:
     notifications.argoproj.io/subscribe.on-deployed.slack: argo
@@ -13,22 +12,24 @@ metadata:
     notifications.argoproj.io/subscribe.on-sync-succeeded.slack: argo
 spec:
   destination:
-    namespace: traefik
+    namespace: default
     server: https://kubernetes.default.svc
   project: default
-  sources:
-  - repoURL: https://github.com/germanium-git/argocd
-    path: apps/traefik
+  source:
+    path: apps/gateway-api-crds/addons
+    repoURL: https://github.com/germanium-git/argocd
     targetRevision: HEAD
-    helm:
-      skipCrds: true
-      valueFiles:
-      - values.yaml
-
-  - repoURL: https://github.com/germanium-git/argocd
-    path: apps/traefik/addons
-    targetRevision: HEAD
-
+  ignoreDifferences:
+  - group: apiextensions.k8s.io
+    kind: CustomResourceDefinition
+    jsonPointers:
+    - /status
+    jqPathExpressions:
+    - .spec.versions[].selectableFields
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+    - ServerSideApply=true
+    - RespectIgnoreDifferences=true

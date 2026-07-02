@@ -1,0 +1,14 @@
+apiVersion: v2
+name: envoy-gateway-umbrella-chart
+description: An Umbrella Helm Chart for Envoy Gateway (Gateway API mode)
+type: application
+version: 0.1.0
+appVersion: "v1.8.2"
+
+dependencies:
+  - name: gateway-helm
+    version: v1.8.2
+    repository: "oci://docker.io/envoyproxy"
+  - name: gateway-crds-helm
+    version: v1.8.2
+    repository: "oci://docker.io/envoyproxy"
