@@ -1,0 +1,31 @@
+---
+# Shared Gateway for apps reached via the Cloudflare Tunnel (cloudflared
+# forwards all *.germanium.cz traffic to Traefik's websecure entrypoint
+# regardless of hostname, see cloudflare/cloudflared ConfigMap).
+#
+# external-dns only reads the `target` override from the Gateway itself
+# (never from HTTPRoute), so apps whose DNS must point at the tunnel
+# instead of the MetalLB IP need their HTTPRoutes attached here rather
+# than to traefik-gateway-tls.
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: traefik-gateway-tls-tunnel
+  namespace: traefik
+  annotations:
+    external-dns.alpha.kubernetes.io/target: "f14686c6-e006-4076-9b65-a84d93aa2e01.cfargotunnel.com"
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - name: websecure
+      port: 8443
+      protocol: HTTPS
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: germanium-cz-prod-tls
+            namespace: default

@@ -22,10 +22,13 @@ home-assistant:
     size: 5Gi
     storageClass: "nfs-atlas"
 
-  # Ingress settings
+  # Ingress replaced by a Gateway API HTTPRoute (below) attached to the
+  # shared traefik-gateway-tls-tunnel Gateway (see apps/traefik/addons),
+  # since DNS for this host is a CNAME to the Cloudflare Tunnel rather
+  # than the MetalLB IP.
   ingress:
     # Enable ingress for home assistant
-    enabled: true
+    enabled: false
     className: "traefik"
     labels: {}
     annotations:
@@ -41,6 +44,18 @@ home-assistant:
     - secretName: homeassist-germanium-cz-prod-tls
       hosts:
         - homeassist.germanium.cz
+
+  # Gateway API HTTPRoute settings (native chart support, replaces ingress above)
+  httpRoute:
+    enabled: true
+    annotations:
+      external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    parentRefs:
+      - name: traefik-gateway-tls-tunnel
+        namespace: traefik
+        sectionName: websecure
+    hostnames:
+      - homeassist.germanium.cz
 
   # Configuration for Home Assistant
   configuration:
