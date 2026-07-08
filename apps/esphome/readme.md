@@ -7,13 +7,27 @@ https://gitlab.com/alexander-chernov/helm/home-assistant
 
 ## Installation 
 
-### Certificate
+Everything is delivered through the `esphome` Argo CD Application (multi-source:
+Helm chart from `apps/esphome` + raw manifests from `apps/esphome/addons`). Nothing
+in this app needs to be applied manually anymore.
 
-```
-k apply -f .\esphome-certificate-prod.yaml
-k apply -f .\esphome-certificate-staging.yaml
+### Networking
 
-```
+Traffic is routed via Gateway API instead of an Ingress:
+
+- `addons/httproute-http.yaml` — HTTP (port 80) on the shared `traefik/traefik-gateway`,
+  redirects to HTTPS.
+- `addons/httproute-https.yaml` — HTTPS on the shared `traefik/traefik-gateway-tls`,
+  routes to the `esphome` Service (port 6052). TLS is terminated at that shared
+  Gateway using the `germanium.cz` wildcard cert — it already covers
+  `esphome.germanium.cz`.
+- `addons/esphome-certificate-prod.yaml` / `-staging.yaml` — esphome's own
+  cert-manager `Certificate`s, kept for parity with the previous Ingress setup.
+  They are no longer consumed by routing (the shared wildcard cert handles TLS),
+  but are still Argo-managed so they keep renewing.
+
+The chart's own `ingress` is disabled (`esphome.ingress.enabled: false` in
+`values.yaml`).
 
 ### Persistent storage
 
