@@ -15,13 +15,18 @@ spec:
     namespace: esphome
     server: https://kubernetes.default.svc
   project: default
-  source:
+  sources:
+  - repoURL: https://github.com/germanium-git/argocd
+    path: apps/esphome
+    targetRevision: HEAD
     helm:
       valueFiles:
       - values.yaml
-    path: apps/esphome
-    repoURL: https://github.com/germanium-git/argocd
+
+  - repoURL: https://github.com/germanium-git/argocd
+    path: apps/esphome/addons
     targetRevision: HEAD
+
   syncPolicy:
     syncOptions:
     - CreateNamespace=true

@@ -6,8 +6,11 @@ esphome:
     tag: ""
 
 
+  # Ingress replaced by Gateway API HTTPRoutes in ./addons
+  # (httproute-http.yaml, httproute-https.yaml), attached to the shared
+  # traefik-gateway / traefik-gateway-tls Gateways (see apps/traefik/addons).
   ingress:
-    enabled: true
+    enabled: false
     className: "traefik"
     annotations:
       {}

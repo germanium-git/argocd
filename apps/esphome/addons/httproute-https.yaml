@@ -1,0 +1,28 @@
+---
+# HTTPS routing; TLS is terminated at the shared traefik-gateway-tls
+# listener using the germanium.cz wildcard cert (covers esphome.germanium.cz)
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: esphome-https
+  namespace: esphome
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: traefik-gateway-tls
+      namespace: traefik
+      sectionName: websecure
+  hostnames:
+    - "esphome.germanium.cz"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: esphome
+          port: 6052
+          weight: 1
