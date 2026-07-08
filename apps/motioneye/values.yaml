@@ -1,4 +1,10 @@
 motioneye:
+  # Ingress replaced by a Gateway API HTTPRoute (apps/motioneye/addons),
+  # attached to the shared traefik-gateway-tls-tunnel Gateway so this app
+  # is reachable via the Cloudflare Tunnel over HTTPS.
+  ingress:
+    enabled: false
+
   storageClassName: nfs-atlas
   podSecurityContext: 
     runAsUser: 1002
