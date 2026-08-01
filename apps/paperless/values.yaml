@@ -11,6 +11,11 @@ paperless-ngx:
           name: paperless-postgresql
           key: password
     PAPERLESS_REDIS: redis://paperless-redis:6379
+    # Ingress replaced by a Gateway API HTTPRoute (apps/paperless/addons), attached to the
+    # shared traefik-gateway-tls-tunnel Gateway. Disabling ingress.main drops the chart's
+    # auto-derived PAPERLESS_URL (see templates/common.yaml), so it's set explicitly here to
+    # preserve CSRF trusted-origin behavior behind the proxy.
+    PAPERLESS_URL: https://paperless.germanium.cz
 
   envFrom:
     - secretRef:
@@ -18,20 +23,7 @@ paperless-ngx:
 
   ingress:
     main:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-        external-dns.alpha.kubernetes.io/hostname: paperless.germanium.cz
-        external-dns.alpha.kubernetes.io/target: f14686c6-e006-4076-9b65-a84d93aa2e01.cfargotunnel.com
-      ingressClassName: traefik
-      hosts:
-        - host: paperless.germanium.cz
-          paths:
-            - path: /
-      tls:
-        - secretName: paperless-germanium-cz-prod-tls
-          hosts:
-            - paperless.germanium.cz
+      enabled: false
 
   persistence:
     data:

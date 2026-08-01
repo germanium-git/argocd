@@ -21,7 +21,7 @@ spec:
           - values.yaml
     - repoURL: https://github.com/germanium-git/argocd
       path: apps/paperless/addons
-      targetRevision: main
+      targetRevision: HEAD
   destination:
     namespace: paperless
     server: https://kubernetes.default.svc
