@@ -15,8 +15,8 @@ helm show crds traefik --repo https://traefik.github.io/charts --version <chart-
   | kubectl apply --server-side --force-conflicts -f -
 ```
 
-The chart is vendored in `charts/traefik-<version>.tgz`. A version bump must also replace that
-tarball (`helm dependency update`), otherwise Argo CD keeps rendering the old chart.
+The chart itself is not committed: Argo CD downloads the version pinned in `Chart.lock`.
+Do not commit `charts/*.tgz` (ignored via `.gitignore`), or version bumps in `Chart.yaml` stop taking effect.
 
 # Password protection for the dashboard
 

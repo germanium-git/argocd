@@ -1,0 +1,4 @@
+# Helm chart dependencies are downloaded by Argo CD (helm dependency build).
+# Do not commit them: Argo CD would render the committed .tgz and ignore
+# version bumps in Chart.yaml (e.g. from Dependabot).
+apps/*/charts/
