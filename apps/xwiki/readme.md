@@ -23,6 +23,16 @@ Official chart from [xwiki-contrib/xwiki-helm](https://github.com/xwiki-contrib/
 
 When bumping XWiki, keep the `-postgres-tomcat` suffix and update `appVersion` in `Chart.yaml`.
 
+### Dependabot
+
+- The `xwiki` chart version is tracked by the `helm` ecosystem (`apps/*/Chart.yaml`).
+- The XWiki image tag is tracked by the `docker` ecosystem. `image.repository` in `values.yaml`
+  exists only so Dependabot recognises the image (the chart reads `image.name`).
+- Only the **LTS line** is proposed: the ignore range in `.github/dependabot.yml` skips non-LTS
+  releases. After moving to a new LTS (e.g. 18.10), shift the range to the next gap (`>= 18.11, < 19.10`).
+- `postgres` images are tracked for minor/patch only; major upgrades need a dump/restore.
+- Before merging an XWiki bump, back up PostgreSQL (XWiki may migrate the schema on startup).
+
 ## Components
 
 | Component | Source | Notes |

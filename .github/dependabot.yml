@@ -15,6 +15,27 @@ updates:
     commit-message:
       prefix: "chore(deps)"
 
+  # Container images pinned in plain manifests / values files
+  - package-ecosystem: "docker"
+    directories:
+      - "/apps/xwiki"
+      - "/apps/xwiki/addons"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Prague"
+    commit-message:
+      prefix: "chore(deps)"
+    ignore:
+      # XWiki: follow the LTS line only. Allows 17.10.x patches and the next LTS (18.10.x).
+      # When on 18.10, move the range to the next gap: [">= 18.11, < 19.10"].
+      - dependency-name: "xwiki"
+        versions: [">= 17.11, < 18.10"]
+      # PostgreSQL: a major upgrade needs dump/restore, never propose it automatically.
+      - dependency-name: "postgres"
+        update-types: ["version-update:semver-major"]
+
   # Keeps any GitHub Actions workflows added later up to date
   - package-ecosystem: "github-actions"
     directory: "/"

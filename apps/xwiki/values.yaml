@@ -1,7 +1,11 @@
 xwiki:
   # The chart only auto-selects the image variant for its bundled DBs, so with an
   # external DB the tag must be set explicitly. 17.10.x is the current LTS line.
+  # Dependabot (docker ecosystem) only recognises image.repository + image.tag, while the
+  # chart reads image.name. `repository` is ignored by the chart and only lets Dependabot
+  # bump `tag`. Dependabot is restricted to the LTS line (see .github/dependabot.yml).
   image:
+    repository: xwiki
     name: xwiki
     tag: 17.10.14-postgres-tomcat
 
