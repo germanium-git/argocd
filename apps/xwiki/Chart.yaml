@@ -1,0 +1,11 @@
+apiVersion: v2
+name: umbrella-chart
+description: An Umbrella Helm Chart for XWiki
+type: application
+version: 0.1.0
+appVersion: "17.10.14"
+
+dependencies:
+  - name: xwiki
+    version: 1.7.3
+    repository: https://xwiki-contrib.github.io/xwiki-helm
