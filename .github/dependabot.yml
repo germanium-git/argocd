@@ -83,6 +83,12 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "chore(deps)"
+    # The helm ecosystem also bumps image tags found in values.yaml, so repeat the image rules here.
+    ignore:
+      - dependency-name: "xwiki"
+        versions: [">= 17.11, < 18.10"]
+      - dependency-name: "postgres"
+        update-types: ["version-update:semver-major"]
 
   # Container images pinned in plain manifests / values files
   - package-ecosystem: "docker"

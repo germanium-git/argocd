@@ -38,7 +38,7 @@ When bumping XWiki, keep the `-postgres-tomcat` suffix and update `appVersion` i
 | Component | Source | Notes |
 |---|---|---|
 | XWiki | Helm chart | StatefulSet, Tomcat, port 8080 (Service `xwiki:80`) |
-| PostgreSQL | `addons/postgresql.yaml` | `postgres:17-alpine`, UTF-8, StatefulSet |
+| PostgreSQL | `addons/postgresql.yaml` | `postgres:17-alpine` (wait-for-db init container: `postgres:18-alpine`, client only), UTF-8, StatefulSet |
 | HTTPRoute | `addons/httproute-https.yaml` | `wiki.germanium.cz`, wildcard cert on the gateway |
 | DB secret | `addons/xwiki-postgresql-sealedsecret.yaml` | SealedSecret `xwiki-postgresql` (`password`) |
 
