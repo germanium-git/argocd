@@ -43,7 +43,5 @@ Add the following annotations to each app for which the notifications should be 
 
 notifications.argoproj.io/subscribe.on-deployed.slack=argo
 notifications.argoproj.io/subscribe.on-health-degraded.slack=argo
-notifications.argoproj.io/subscribe.oon-sync-failed.slack=argo
-notifications.argoproj.io/subscribe.on-sync-running.slack=argo
+notifications.argoproj.io/subscribe.on-sync-failed.slack=argo
 notifications.argoproj.io/subscribe.on-sync-status-unknown.slack=argo
-notifications.argoproj.io/subscribe.on-sync-succeeded.slack=argo
