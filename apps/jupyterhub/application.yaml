@@ -27,6 +27,31 @@ spec:
     namespace: jhub
     server: https://kubernetes.default.svc
   
+  # z2jh generates hub secrets with Helm `lookup`, which Argo CD does not support,
+  # so every render produces new random values. Ignore them and never overwrite the
+  # live ones (rotating them would log everyone out and break encrypted auth state).
+  ignoreDifferences:
+  - kind: Secret
+    name: hub
+    namespace: jhub
+    jsonPointers:
+    - /data/hub.config.ConfigurableHTTPProxy.auth_token
+    - /data/hub.config.CryptKeeper.keys
+    - /data/hub.config.JupyterHub.cookie_secret
+  - group: apps
+    kind: Deployment
+    name: hub
+    namespace: jhub
+    jsonPointers:
+    - /spec/template/metadata/annotations/checksum~1secret
+  - group: apps
+    kind: Deployment
+    name: proxy
+    namespace: jhub
+    jsonPointers:
+    - /spec/template/metadata/annotations/checksum~1auth-token
+
   syncPolicy:
     syncOptions:
     - CreateNamespace=true
+    - RespectIgnoreDifferences=true
