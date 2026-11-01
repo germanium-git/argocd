@@ -1,0 +1,27 @@
+# Dependabot configuration
+# Docs: https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+version: 2
+updates:
+  # Upstream Helm charts wrapped as dependencies in apps/<app>/Chart.yaml
+  - package-ecosystem: "helm"
+    directories:
+      - "/apps/*"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Prague"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+
+  # Keeps any GitHub Actions workflows added later up to date
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Prague"
+    commit-message:
+      prefix: "chore(ci)"
