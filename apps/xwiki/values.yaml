@@ -1,0 +1,59 @@
+xwiki:
+  # The chart only auto-selects the image variant for its bundled DBs, so with an
+  # external DB the tag must be set explicitly. 17.10.x is the current LTS line.
+  image:
+    name: xwiki
+    tag: 17.10.14-postgres-tomcat
+
+  # Bundled Bitnami subcharts are disabled (Bitnami removed most tags from Docker Hub,
+  # same issue as paperless). Standalone PostgreSQL is deployed from addons/postgresql.yaml.
+  mysql:
+    enabled: false
+  mariadb:
+    enabled: false
+  postgresql:
+    enabled: false
+
+  externalDB:
+    type: postgresql
+    host: xwiki-postgres
+    database: xwiki
+    user: xwiki
+    customKeyRef:
+      enabled: true
+      name: xwiki-postgresql
+      key: password
+
+  # Wait for PostgreSQL before starting XWiki
+  initContainers:
+    database:
+      enabled: true
+      # The chart only derives this image for its bundled DBs
+      image: postgres:17-alpine
+
+  # XWiki permanent directory (extensions, attachments cache, Solr index, logs)
+  persistence:
+    enabled: true
+    storageClass: nfs-atlas
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+
+  # The embedded Solr index on NFS can be slow; XWiki is a JVM app, give it room.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1536Mi
+    limits:
+      memory: 3Gi
+  javaOpts:
+    - "-Xmx2048m"
+
+  # TLS is terminated at the Traefik gateway; make XWiki generate https:// URLs.
+  customConfigs:
+    xwiki.cfg:
+      xwiki.url.protocol: https
+      xwiki.home: https://wiki.germanium.cz/
+
+  ingress:
+    enabled: false

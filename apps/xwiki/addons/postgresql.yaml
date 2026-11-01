@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: xwiki-postgres
+  namespace: xwiki
+spec:
+  serviceName: xwiki-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xwiki-postgres
+  template:
+    metadata:
+      labels:
+        app: xwiki-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          env:
+            - name: POSTGRES_DB
+              value: xwiki
+            - name: POSTGRES_USER
+              value: xwiki
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: xwiki-postgresql
+                  key: password
+            # XWiki requires a UTF-8 database
+            - name: POSTGRES_INITDB_ARGS
+              value: "--encoding=UTF8 --locale-provider=builtin --locale=C.UTF-8"
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          ports:
+            - containerPort: 5432
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "xwiki", "-d", "xwiki"]
+            periodSeconds: 10
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ReadWriteOnce]
+        storageClassName: nfs-atlas
+        resources:
+          requests:
+            storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xwiki-postgres
+  namespace: xwiki
+spec:
+  selector:
+    app: xwiki-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
