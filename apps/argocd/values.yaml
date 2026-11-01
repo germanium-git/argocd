@@ -248,11 +248,11 @@ argo-cd:
             }]
     triggers:
       trigger.on-deployed: |
-        - description: Application is synced and healthy. Triggered once per commit.
-          oncePer: app.status.sync.revision
+        - description: Application is synced and healthy. Triggered once per sync operation.
+          oncePer: app.status.operationState?.finishedAt
           send:
           - app-deployed
-          when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
+          when: app.status.operationState != nil and app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
       trigger.on-health-degraded: |
         - description: Application has degraded
           send:
