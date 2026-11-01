@@ -7,7 +7,7 @@ appVersion: "v1.8.2"
 
 dependencies:
   - name: gateway-helm
-    version: v1.8.2
+    version: v1.9.3
     repository: "oci://docker.io/envoyproxy"
   - name: gateway-crds-helm
     version: v1.8.2
