@@ -40,14 +40,16 @@ xwiki:
     size: 10Gi
 
   # The embedded Solr index on NFS can be slow; XWiki is a JVM app, give it room.
+  # 3Gi limit with a 2g heap was OOMKilled while installing the Standard Flavor:
+  # metaspace, embedded Solr and thread stacks need ~1.5-2Gi on top of the heap.
   resources:
     requests:
       cpu: 500m
-      memory: 1536Mi
+      memory: 2Gi
     limits:
-      memory: 3Gi
+      memory: 5Gi
   javaOpts:
-    - "-Xmx2048m"
+    - "-Xmx3072m"
 
   # TLS is terminated at the Traefik gateway; make XWiki generate https:// URLs.
   customConfigs:
