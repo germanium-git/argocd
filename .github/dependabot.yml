@@ -1,11 +1,80 @@
 # Dependabot configuration
 # Docs: https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
 version: 2
+
+# The Dependabot proxy only lets the helm updater reach chart repositories that are on
+# its built-in egress allowlist or declared here; others fail with
+# "egress not allowlisted <host>" (403) and are silently never checked.
+# All of these are public. GitHub rejects a helm-registry entry without credentials,
+# so placeholder anonymous credentials are used; public chart repos ignore them.
+registries:
+  awx-operator:
+    type: helm-registry
+    url: https://ansible-community.github.io/awx-operator-helm
+    username: anonymous
+    password: anonymous
+  alekc:
+    type: helm-registry
+    url: https://charts.alekc.dev
+    username: anonymous
+    password: anonymous
+  gabe565:
+    type: helm-registry
+    url: https://charts.gabe565.com
+    username: anonymous
+    password: anonymous
+  community-charts:
+    type: helm-registry
+    url: https://community-charts.github.io/helm-charts
+    username: anonymous
+    password: anonymous
+  germanium-git:
+    type: helm-registry
+    url: https://germanium-git.github.io/helm-charts
+    username: anonymous
+    password: anonymous
+  helm-examples:
+    type: helm-registry
+    url: https://helm.github.io/examples
+    username: anonymous
+    password: anonymous
+  nginx:
+    type: helm-registry
+    url: https://helm.nginx.com/stable
+    username: anonymous
+    password: anonymous
+  istio:
+    type: helm-registry
+    url: https://istio-release.storage.googleapis.com/charts
+    username: anonymous
+    password: anonymous
+  jupyterhub:
+    type: helm-registry
+    url: https://jupyterhub.github.io/helm-chart
+    username: anonymous
+    password: anonymous
+  metallb:
+    type: helm-registry
+    url: https://metallb.github.io/metallb
+    username: anonymous
+    password: anonymous
+  rancher:
+    type: helm-registry
+    url: https://releases.rancher.com/server-charts/latest
+    username: anonymous
+    password: anonymous
+  xwiki:
+    type: helm-registry
+    url: https://xwiki-contrib.github.io/xwiki-helm
+    username: anonymous
+    password: anonymous
+
 updates:
   # Upstream Helm charts wrapped as dependencies in apps/<app>/Chart.yaml
   - package-ecosystem: "helm"
     directories:
       - "/apps/*"
+    registries: "*"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -35,14 +104,3 @@ updates:
       # PostgreSQL: a major upgrade needs dump/restore, never propose it automatically.
       - dependency-name: "postgres"
         update-types: ["version-update:semver-major"]
-
-  # Keeps any GitHub Actions workflows added later up to date
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-      time: "06:00"
-      timezone: "Europe/Prague"
-    commit-message:
-      prefix: "chore(ci)"
