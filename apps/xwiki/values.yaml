@@ -33,7 +33,7 @@ xwiki:
     database:
       enabled: true
       # The chart only derives this image for its bundled DBs
-      image: postgres:17-alpine
+      image: postgres:18-alpine
 
   # XWiki permanent directory (extensions, attachments cache, Solr index, logs)
   persistence:
