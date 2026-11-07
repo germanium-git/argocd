@@ -1,46 +1,36 @@
-# Postgres
+# PostgreSQL (AWX)
 
-## StorageClass nfs-pgsql
+PostgreSQL for AWX, from plain manifests in `templates/` with the **official `postgres` image**
+(migrated from the Bitnami chart / `bitnami/postgresql:latest` in Nov 2026 by dump & restore).
 
-The storagClass `nfs-pgsql` is used in this case which allows the container run with the security context using the values below to change ownership of the nfs mounted volume.
-SecurityContext parameters
-- runAsUser: 1024
-- runAsGroup: 100
-- fsGroup: 100
+| | |
+|---|---|
+| Image | `postgres:18.6` (Debian, tracked by Dependabot `docker`; majors ignored) |
+| StatefulSet | `postgres` (pod `postgres-0`) |
+| Service | `pgsql-awx.pgsql.svc.cluster.local:5432` (old name kept, AWX config unchanged) |
+| Database / user | `postgres` / `postgres` (only role), `en_US.UTF-8` |
+| Password | SealedSecret `templates/pgsql-awx-sealedsecret.yaml` → Secret `pgsql-awx` key `postgres-password`; same value as `awx/awx-demo-postgres-configuration` |
+| Storage | PVC `data-postgres-0`, 8Gi `nfs-atlas`, `PGDATA=/var/lib/postgresql/18/docker` |
+| Argo CD | **manual sync** (database: sync deliberately) |
 
-
-### Synology as a NFS Server
-
-See more information on the options and relevant UIDs and GIDs used on the box:
-https://discourse.osmc.tv/t/using-nfs-with-synology/36776
-
+The old Bitnami volume `data-pgsql-awx-0` is kept for rollback; delete it once the new one is trusted.
 
 ## Access
 
-Read write connection `pgsql-awx.pgsql.svc.cluster.local`
-
-The following commands assume the name override to "awx" ending up with the name `pgsql-awx`. Replace with a relevant name if needed.
-```
-# Get password
-export POSTGRES_PASSWORD=$(kubectl get secret --namespace pgsql pgsql-awx -o jsonpath="{.data.postgres-password}" | base64 -d)
-
-# Spin up a clinet POD and run the command to access the database
-kubectl run pgsql-postgresql-client \
-    --rm --tty -i --restart='Never' --namespace pgsql \
-    --image docker.io/bitnami/postgresql:16.2.0-debian-12-r18 \
-    --env="PGPASSWORD=$POSTGRES_PASSWORD" \
-    --command -- psql --host pgsql-awx -U postgres -d postgres -p 5432
+```bash
+kubectl exec -it -n pgsql postgres-0 -- psql -U postgres
 ```
 
-## StorageClass nfs-atlas
+## Backup / restore
 
-### Synology as a NFS Server
-  podSecurityContext:
-    runAsUser: 1002       # k8s-orange user
-    runAsGroup: 1000      # k8s-nfs-group
-    fsGroup: 1000         # k8s-nfs-group
+```bash
+kubectl exec -n pgsql postgres-0 -- pg_dump -U postgres -d postgres -Fc > awx-$(date +%F).dump
+kubectl exec -i -n pgsql postgres-0 -- pg_restore -U postgres -d postgres --clean --if-exists < awx-YYYY-MM-DD.dump
+```
 
+Stop AWX before restoring: `kubectl patch awx awx-demo -n awx --type merge -p '{"spec":{"replicas":0}}'`
+(back with `"replicas":1`).
 
-## Helm
+## Major upgrades (e.g. 18 → 19)
 
-https://artifacthub.io/packages/helm/bitnami/postgresql
+Not done in place: dump, deploy the new major on a new volume, restore (see the migration in PR history).

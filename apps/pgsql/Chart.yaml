@@ -1,11 +1,6 @@
 apiVersion: v2
 name: pgsql
-description: An Umbrella Helm Chart for postgresql
+description: PostgreSQL for AWX (official postgres image, plain manifests in templates/)
 type: application
-version: 0.1.0
-appVersion: "1.0"
-
-dependencies:
-  - name: postgresql
-    version: 18.12.16
-    repository: https://charts.bitnami.com/bitnami
+version: 0.2.0
+appVersion: "18.6"

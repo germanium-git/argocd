@@ -19,7 +19,7 @@ Manual sync on purpose:
 | App | Why |
 |---|---|
 | `argocd` | Argo CD manages itself; a bad change could break the tool needed to fix it. |
-| `pgsql` | Runs `bitnami/postgresql:latest` with PG 18 data; an unexpected pod restart may pull a different image. |
+| `pgsql` | Database: changes (e.g. image bumps) restart PostgreSQL and AWX loses its DB briefly, so sync deliberately. |
 
 Application specs (`apps/*/application.yaml`) are **not** managed by Argo CD (no app-of-apps):
 after changing one, apply it with `kubectl apply -f apps/<app>/application.yaml`.
