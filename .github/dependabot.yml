@@ -90,6 +90,7 @@ updates:
     directories:
       - "/apps/xwiki"
       - "/apps/xwiki/addons"
+      - "/apps/pgsql/templates"
     schedule:
       interval: "weekly"
       day: "monday"
