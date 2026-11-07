@@ -1,0 +1,32 @@
+# DNS debugging pod on every node (incl. control plane). Moved from Flux (orange-k8s) to Argo CD.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: dnsutils
+  namespace: default
+  labels:
+    app: dnsutils
+spec:
+  selector:
+    matchLabels:
+      app: dnsutils
+  template:
+    metadata:
+      labels:
+        app: dnsutils
+    spec:
+      tolerations:
+        - operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: dnsutils
+          image: registry.k8s.io/e2e-test-images/jessie-dnsutils:1.7
+          command: ["sleep", "infinity"]
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              memory: 64Mi
+      terminationGracePeriodSeconds: 1
