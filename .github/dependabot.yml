@@ -38,11 +38,6 @@ registries:
     url: https://helm.github.io/examples
     username: anonymous
     password: anonymous
-  nginx:
-    type: helm-registry
-    url: https://helm.nginx.com/stable
-    username: anonymous
-    password: anonymous
   istio:
     type: helm-registry
     url: https://istio-release.storage.googleapis.com/charts
