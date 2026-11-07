@@ -90,6 +90,7 @@ updates:
       - "/apps/xwiki"
       - "/apps/xwiki/addons"
       - "/apps/pgsql/templates"
+      - "/apps/telegraf"
     schedule:
       interval: "weekly"
       day: "monday"

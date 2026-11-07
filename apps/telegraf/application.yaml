@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: telegraf
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-deployed.slack: argo
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: argo
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/germanium-git/argocd
+    path: apps/telegraf
+    targetRevision: HEAD
+  destination:
+    namespace: telegraf
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

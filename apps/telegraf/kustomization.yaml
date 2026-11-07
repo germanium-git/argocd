@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: telegraf
+resources:
+  - telegraf-sealedsecret.yaml
+  - deployment.yaml
+  - monitoring.yaml
+configMapGenerator:
+  # Hash suffix: a config/MIB change rolls the pod automatically
+  - name: telegraf-config
+    files:
+      - telegraf.conf
+  - name: telegraf-mibs
+    files:
+      - mibs/IF-MIB
+      - mibs/IANAifType-MIB
+      - mibs/SNMPv2-CONF
+      - mibs/SNMPv2-MIB
+      - mibs/SNMPv2-SMI
+      - mibs/SNMPv2-TC
