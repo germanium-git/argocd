@@ -58,11 +58,6 @@ registries:
     url: https://metallb.github.io/metallb
     username: anonymous
     password: anonymous
-  rancher:
-    type: helm-registry
-    url: https://releases.rancher.com/server-charts/latest
-    username: anonymous
-    password: anonymous
   xwiki:
     type: helm-registry
     url: https://xwiki-contrib.github.io/xwiki-helm
