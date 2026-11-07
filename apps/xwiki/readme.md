@@ -26,7 +26,7 @@ When bumping XWiki, keep the `-postgres-tomcat` suffix and update `appVersion` i
 ### Dependabot
 
 - The `xwiki` chart version is tracked by the `helm` ecosystem (`apps/*/Chart.yaml`).
-- The XWiki image tag is tracked by the `docker` ecosystem. `image.repository` in `values.yaml`
+- The XWiki image tag is tracked by the `docker` ecosystem. `image.repository: docker.io/library/xwiki` in `values.yaml`
   exists only so Dependabot recognises the image (the chart reads `image.name`).
 - Only the **LTS line** is proposed: the ignore range in `.github/dependabot.yml` skips non-LTS
   releases. After moving to a new LTS (e.g. 18.10), shift the range to the next gap (`>= 18.11, < 19.10`).
@@ -90,3 +90,9 @@ kubectl create secret generic xwiki-postgresql -n xwiki \
 kubectl port-forward svc/xwiki-postgres 5432:5432 -n xwiki
 kubectl get secret xwiki-postgresql -n xwiki -o jsonpath='{.data.password}' | base64 -d
 ```
+
+## Auto-sync
+
+The Argo app syncs automatically (`prune` + `selfHeal`): merging a PR to `main` deploys it within
+~3 minutes, and manual `kubectl` changes to managed objects are reverted. **Review Dependabot PRs
+before merging**: e.g. check that `image.tag` still ends in `-postgres-tomcat`.
