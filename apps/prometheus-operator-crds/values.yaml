@@ -1,0 +1,6 @@
+prometheus-operator-crds:
+  crds:
+    annotations:
+      # Never prune/delete the CRDs: removing them would delete every Prometheus,
+      # Alertmanager, ServiceMonitor, PrometheusRule ... in the cluster.
+      argocd.argoproj.io/sync-options: Prune=false,Delete=false
