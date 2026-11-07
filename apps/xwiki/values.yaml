@@ -7,7 +7,7 @@ xwiki:
   image:
     repository: xwiki
     name: xwiki
-    tag: 17.10.14-postgres-tomcat
+    tag: 1.7.4
 
   # Bundled Bitnami subcharts are disabled (Bitnami removed most tags from Docker Hub,
   # same issue as paperless). Standalone PostgreSQL is deployed from addons/postgresql.yaml.
