@@ -37,5 +37,8 @@ spec:
     - .spec.versions[].selectableFields
 
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
     - RespectIgnoreDifferences=true

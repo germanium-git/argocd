@@ -1,4 +1,10 @@
 postgresql:
+  # The postgres password comes from SealedSecret templates/pgsql-awx-sealedsecret.yaml (same name as the
+  # Secret the chart used to generate, so the StatefulSet is unchanged). Without it the Bitnami chart
+  # generates a random password on every Argo CD render: permanent OutOfSync, and the secret no longer
+  # matches the database. The value is the one AWX uses (awx/awx-demo-postgres-configuration).
+  auth:
+    existingSecret: pgsql-awx
   primary:
     podSecurityContext:
       fsGroup: 1000

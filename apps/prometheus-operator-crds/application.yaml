@@ -28,6 +28,9 @@ spec:
     jqPathExpressions:
     - .spec.versions[].selectableFields
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
     # The CRDs are too large for client-side apply (last-applied annotation limit)
     - ServerSideApply=true
