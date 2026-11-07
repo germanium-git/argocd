@@ -1,4 +1,7 @@
 kube-prometheus-stack:
+  ## CRDs are managed by the separate Argo app apps/prometheus-operator-crds (sync that one first on upgrades).
+  crds:
+    enabled: false
   ## Component scraping kube scheduler
   kubeScheduler:
     enabled: false
