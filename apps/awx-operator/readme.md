@@ -32,3 +32,11 @@ The [AWX.extraDeploy] (https://github.com/ansible/awx-operator/blob/devel/.helm/
 
 ## AWX Server
 Create the AWS server by applying the manifest from awx-demo.yaml
+
+## Access
+
+- **https://awx.germanium.cz** (LAN only): HTTPRoute `awx-https` (in `values.yaml` → `extraDeploy`) on
+  `traefik-gateway-tls` with the wildcard certificate. external-dns registers the A record in Cloudflare.
+- `http://172.31.1.32` still works: AWX's own LoadBalancer Service (`service_type: LoadBalancer` in the AWX CR).
+- Login `admin`; initial password:
+  `kubectl get secret awx-demo-admin-password -n awx -o jsonpath='{.data.password}' | base64 -d`
