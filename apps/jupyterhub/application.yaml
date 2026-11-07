@@ -52,6 +52,9 @@ spec:
     - /spec/template/metadata/annotations/checksum~1auth-token
 
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
     - CreateNamespace=true
     - RespectIgnoreDifferences=true

@@ -21,6 +21,9 @@ spec:
     repoURL: https://github.com/germanium-git/argocd
     targetRevision: HEAD
   syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     syncOptions:
     - CreateNamespace=true
     - ServerSideApply=true
