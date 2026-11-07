@@ -5,9 +5,12 @@ xwiki:
   # chart reads image.name. `repository` is ignored by the chart and only lets Dependabot
   # bump `tag`. Dependabot is restricted to the LTS line (see .github/dependabot.yml).
   image:
-    repository: xwiki
+    # repository is read only by Dependabot (the chart uses `name`). It must NOT be plain "xwiki":
+    # Dependabot's helm job would then confuse the image with the `xwiki` chart dependency and write
+    # the chart version into the image tag (PR #143 set tag: 1.7.4).
+    repository: docker.io/library/xwiki
     name: xwiki
-    tag: 1.7.4
+    tag: 17.10.14-postgres-tomcat
 
   # Bundled Bitnami subcharts are disabled (Bitnami removed most tags from Docker Hub,
   # same issue as paperless). Standalone PostgreSQL is deployed from addons/postgresql.yaml.
