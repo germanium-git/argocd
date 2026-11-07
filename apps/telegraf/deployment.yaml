@@ -1,0 +1,49 @@
+# Name/selector kept from the Flux-era deployment so Argo CD adopts it in place.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telegraf-deployment
+  labels:
+    app: telegraf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telegraf
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: telegraf
+    spec:
+      containers:
+        - name: telegraf
+          image: telegraf:1.40.3
+          args: ["telegraf", "--config", "/etc/telegraf/telegraf.conf"]
+          envFrom:
+            - secretRef:
+                name: telegraf-secrets
+          ports:
+            - name: metrics
+              containerPort: 9273
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: telegraf-config
+              mountPath: /etc/telegraf/telegraf.conf
+              subPath: telegraf.conf
+              readOnly: true
+            - name: telegraf-mibs
+              mountPath: /usr/share/snmp/mibs
+              readOnly: true
+      volumes:
+        - name: telegraf-config
+          configMap:
+            name: telegraf-config
+        - name: telegraf-mibs
+          configMap:
+            name: telegraf-mibs
