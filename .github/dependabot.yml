@@ -80,6 +80,10 @@ updates:
       prefix: "chore(deps)"
     # The helm ecosystem also bumps image tags found in values.yaml, so repeat the image rules here.
     ignore:
+      # 93.0.0 ships prometheus-operator v0.95.1, published for linux/amd64 only (nodes are arm64):
+      # https://github.com/prometheus-operator/prometheus-operator/issues/8953 - remove once fixed.
+      - dependency-name: "kube-prometheus-stack"
+        versions: ["93.0.0"]
       - dependency-name: "*xwiki"
         versions: [">= 17.11, < 18.10"]
       - dependency-name: "postgres"

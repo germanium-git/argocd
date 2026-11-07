@@ -87,3 +87,10 @@ labels:
 ```
 
 Check if Promethgeus sees the new ServiceMonitors as valid targets - http://prometheus.germanium.cz:9090/targets
+
+### arm64
+
+The nodes are **arm64**. Before merging an upgrade, check that the new operator / config-reloader images have an
+arm64 manifest, e.g.
+`crane manifest quay.io/prometheus-operator/prometheus-operator:<tag> | grep architecture`
+(93.0.0 / operator v0.95.1 was amd64-only: prometheus-operator#8953; skipped in `.github/dependabot.yml`).
