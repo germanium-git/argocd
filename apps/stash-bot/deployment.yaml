@@ -1,0 +1,136 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stash-bot
+  labels:
+    app: stash-bot
+spec:
+  replicas: 1 # never more: Hermes must not run two gateways on one data dir
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: stash-bot
+  template:
+    metadata:
+      labels:
+        app: stash-bot
+    spec:
+      initContainers:
+        # Render config.yaml (inject the sidecar's bearer token) and copy SOUL.md into the data dir.
+        - name: render-config
+          image: busybox:1.37.0
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              sed "s|__MCP_AUTH_TOKEN__|${MCP_AUTH_TOKEN}|g" /config/config.yaml > /opt/data/config.yaml
+              cp /config/SOUL.md /opt/data/SOUL.md
+              chmod 600 /opt/data/config.yaml
+              chown 10000:10000 /opt/data /opt/data/config.yaml /opt/data/SOUL.md
+          env:
+            - name: MCP_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: stash-bot-secrets
+                  key: MCP_AUTH_TOKEN
+          volumeMounts:
+            - name: data
+              mountPath: /opt/data
+            - name: config
+              mountPath: /config
+              readOnly: true
+      containers:
+        - name: hermes
+          image: nousresearch/hermes-agent:v0.23.1@sha256:276d44685c65c0cb2a25f190b63c65c8906f9dc76486fb1c05ae71b5826bda08
+          args: ["gateway", "run"]
+          # Secret keys: SLACK_BOT_TOKEN, SLACK_APP_TOKEN, SLACK_ALLOWED_USERS, ANTHROPIC_API_KEY
+          # (NOTION_TOKEN / MCP_AUTH_TOKEN are present too but unused by Hermes itself)
+          envFrom:
+            - secretRef:
+                name: stash-bot-secrets
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              memory: 1Gi
+          volumeMounts:
+            - name: data
+              mountPath: /opt/data
+        # Notion MCP server as a localhost-only sidecar (Streamable HTTP, bearer auth).
+        - name: notion-mcp
+          image: mcp/notion:latest@sha256:df0d6781d03f37bd5b962c85ae1f288382f31b7108c489473641ffc372f43dc9
+          args: ["--transport", "http", "--port", "3000", "--host", "127.0.0.1"]
+          env:
+            - name: NOTION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: stash-bot-secrets
+                  key: NOTION_TOKEN
+            - name: AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: stash-bot-secrets
+                  key: MCP_AUTH_TOKEN
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+        # Google Sheets MCP server (xing5/mcp-google-sheets) as a localhost-only sidecar.
+        # Auth: service account JSON (base64) in CREDENTIALS_CONFIG; the SA is an Editor on the
+        # "Aircraft Kits" spreadsheet only. No HTTP auth, so it must stay bound to 127.0.0.1.
+        - name: sheets-mcp
+          image: ghcr.io/astral-sh/uv:0.9.7-python3.12-bookworm-slim
+          command: ["uvx", "mcp-google-sheets@0.6.3", "--transport", "streamable-http"]
+          env:
+            - name: HOST
+              value: "127.0.0.1"
+            - name: PORT
+              value: "8001"
+            - name: HOME
+              value: /tmp
+            - name: UV_CACHE_DIR
+              value: /tmp/uv-cache
+            - name: DRIVE_FOLDER_ID
+              value: 1fsEfJj_dY5iJtILeHud_TSc9Yx_krAOC
+            - name: ENABLED_TOOLS
+              value: list_sheets,get_sheet_data,get_multiple_sheet_data,find_in_spreadsheet,add_rows,update_cells,batch_update_cells,create_sheet
+            - name: CREDENTIALS_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: stash-bot-secrets
+                  key: GOOGLE_SA_JSON_B64
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              memory: 512Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            allowPrivilegeEscalation: false
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: stash-bot-data
+        - name: config
+          configMap:
+            name: stash-bot-config
+        - name: tmp
+          emptyDir: {}

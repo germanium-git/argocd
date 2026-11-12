@@ -1,0 +1,13 @@
+# Hermes data dir (/opt/data): sessions, memories, learned skills, logs.
+# config.yaml and SOUL.md are overwritten from the ConfigMap on every start.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: stash-bot-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nfs-atlas
+  resources:
+    requests:
+      storage: 2Gi

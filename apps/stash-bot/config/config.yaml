@@ -1,0 +1,61 @@
+# Hermes Agent config, rendered into /opt/data/config.yaml by the init container on every start
+# (__MCP_AUTH_TOKEN__ is replaced from the Secret). Edit here, not in the pod.
+# Docs: https://hermes-agent.nousresearch.com/docs/user-guide/configuration
+
+model:
+  provider: anthropic
+  default: claude-sonnet-5-5
+
+platforms:
+  slack:
+    extra:
+      require_mention: true     # in channels answer only when @mentioned; DMs always
+      reply_in_thread: true     # one thread per question / purchase
+      allow_bots: "none"
+      unauthorized_dm_behavior: ignore
+
+agent:
+  # The bot only needs chat + MCP tools. No shell, no arbitrary web browsing.
+  # Verify names with `hermes tools` in the pod.
+  disabled_toolsets:
+    - terminal
+    - browser
+    - code_execution
+
+approvals:
+  mode: manual
+  unattended_mode: deny
+  cron_mode: deny
+
+mcp_servers:
+  # Stash master data: Google Sheet "Aircraft Kits" (tabs: Aircraft Kits, Accessories, Paints).
+  # Tool allow-list is enforced in the sidecar (ENABLED_TOOLS in deployment.yaml).
+  sheets:
+    url: "http://127.0.0.1:8001/mcp"
+    timeout: 60
+    tools:
+      resources: false
+      prompts: false
+
+  # Projects: free-form pages under Notion "Home / Plastic Modeling".
+  notion:
+    url: "http://127.0.0.1:3000/mcp"
+    headers:
+      Authorization: "Bearer __MCP_AUTH_TOKEN__"
+    timeout: 60
+    tools:
+      # Only what inventory management needs: no deletes, no user/comment admin.
+      include:
+      # (names = operationIds of notion-mcp-server, exposed as "API-<operationId>")
+        - "*post-search"
+        - "*retrieve-a-database"
+        - "*retrieve-a-data-source"
+        - "*query-data-source"
+        - "*retrieve-a-page"
+        - "*retrieve-a-page-property"
+        - "*retrieve-page-markdown"
+        - "*get-block-children"
+        - "*post-page"
+        - "*patch-page"
+      resources: false
+      prompts: false
