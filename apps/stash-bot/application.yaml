@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stash-bot
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-deployed.slack: argo
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: argo
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/germanium-git/argocd
+    path: apps/stash-bot
+    targetRevision: HEAD
+  destination:
+    namespace: stash-bot
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

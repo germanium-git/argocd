@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: stash-bot
+resources:
+  - stash-bot-sealedsecret.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - networkpolicy.yaml
+configMapGenerator:
+  # Hash suffix: a config/persona change rolls the pod automatically
+  - name: stash-bot-config
+    files:
+      - config/config.yaml
+      - config/SOUL.md
