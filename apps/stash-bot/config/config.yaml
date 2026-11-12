@@ -1,5 +1,5 @@
 # Hermes Agent config, rendered into /opt/data/config.yaml by the init container on every start
-# (__MCP_AUTH_TOKEN__ is replaced from the Secret). Edit here, not in the pod.
+# (the Notion MCP bearer placeholder below is replaced from the Secret). Edit here, not in the pod.
 # Docs: https://hermes-agent.nousresearch.com/docs/user-guide/configuration
 
 model:
