@@ -61,10 +61,11 @@ spec:
                 secretKeyRef:
                   name: stash-bot-secrets
                   key: MCP_AUTH_TOKEN
+          # exec, not tcpSocket: a tcpSocket probe runs from the node, but the server listens only on the pod's 127.0.0.1
           startupProbe:
-            tcpSocket:
-              host: 127.0.0.1
-              port: 3000
+            exec:
+              command: ["node", "-e", "require('net').connect(3000,'127.0.0.1').on('connect',()=>process.exit(0)).on('error',()=>process.exit(1))"]
+            timeoutSeconds: 3
             periodSeconds: 2
             failureThreshold: 60
           resources:
@@ -109,9 +110,9 @@ spec:
                   name: stash-bot-secrets
                   key: GOOGLE_SA_JSON_B64
           startupProbe:
-            tcpSocket:
-              host: 127.0.0.1
-              port: 8001
+            exec:
+              command: ["python3", "-c", "import socket; socket.create_connection(('127.0.0.1', 8001), 2)"]
+            timeoutSeconds: 3
             periodSeconds: 3
             failureThreshold: 100 # first start downloads ~50 packages from PyPI
           resources:
