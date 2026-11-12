@@ -34,7 +34,13 @@ Slack (Socket Mode, outbound only)
     delete and new-spreadsheet calls are not.
   - Notion: `tools.include` in `config.yaml` (search/read/create/update page; no delete).
   - Hermes shell, browser and code-execution toolsets are disabled.
-- The Sheets sidecar runs `uvx mcp-google-sheets@0.6.3` and downloads the package from PyPI at startup.
+- The Sheets sidecar runs `uvx --with "mcp<2" mcp-google-sheets@0.6.3` and downloads the packages from PyPI at
+  startup (`mcp<2`: 0.6.3 imports `mcp.server.fastmcp`, renamed in mcp 2.x).
+- Both MCP servers are native sidecars (`initContainers` with `restartPolicy: Always` + `startupProbe`), so the
+  `hermes` container starts only once they listen. Otherwise Hermes "parks" an unreachable MCP server.
+- Rotate a single key without touching the others:
+  `kubectl create secret generic stash-bot-secrets -n stash-bot --from-file=KEY=<file> --dry-run=client -o json | kubeseal --merge-into stash-bot-sealedsecret.yaml`
+  (it rewrites the file as JSON; convert back to YAML).
 
 ## One-time setup
 
