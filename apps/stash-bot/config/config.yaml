@@ -4,7 +4,15 @@
 
 model:
   provider: anthropic
-  default: claude-sonnet-5-5
+  # Haiku is ~20x cheaper than Sonnet ($0.10/$0.50 vs $2/$10 per MTok). Switch back to
+  # claude-sonnet-5-5 if matching (Czech names, paint equivalents) gets noticeably worse.
+  default: claude-haiku-5-5
+
+auxiliary:
+  # Post-turn "self-improvement" fork (save memory / write a skill) replays the whole conversation:
+  # ~26 % extra per chat. Not needed here, SOUL.md holds the rules.
+  background_review:
+    enabled: false
 
 platforms:
   slack:
