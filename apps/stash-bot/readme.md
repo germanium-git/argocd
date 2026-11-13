@@ -88,7 +88,17 @@ kubectl exec -n stash-bot deploy/stash-bot -c hermes -- hermes tools   # verify 
 kubectl exec -n stash-bot deploy/stash-bot -c hermes -- hermes config get model --json
 ```
 
-Change the model in `config/config.yaml` (`model.default`; for example `claude-haiku-5-5` is cheaper).
+Change the model in `config/config.yaml` (`model.default`: `claude-haiku-5-5` now, `claude-sonnet-5-5` if
+answers get worse).
+
+## Cost
+
+- Every API call resends the whole conversation (prompt-cached, but still billed as cache reads and writes).
+  Hermes no longer ends idle conversations, so a long Slack thread keeps getting more expensive. **Start
+  each new question as a new top-level `@Stash Bot` message**, or send `/new` in the thread.
+- `auxiliary.background_review` (memory/skill learning after each turn) is disabled; it cost ~26 % extra.
+- Per-session usage and estimated cost are stored in `state.db`:
+  `kubectl exec -n stash-bot deploy/stash-bot -c hermes -- /opt/hermes/.venv/bin/python3 -c "import sqlite3; [print(r) for r in sqlite3.connect('/opt/data/state.db').execute('select session_id,task,api_call_count,round(estimated_cost_usd,3) from session_model_usage')]"`
 
 ## Smoke test
 
