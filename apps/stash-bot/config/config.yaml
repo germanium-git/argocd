@@ -40,6 +40,9 @@ approvals:
   mode: manual
   unattended_mode: deny
   cron_mode: deny
+  # No "Confirm /new" buttons for !new / !reset / !undo: they only drop chat history, never sheet or
+  # Notion data. (The "Always Approve" button would write this to the pod's config.yaml, lost on restart.)
+  destructive_slash_confirm: false
 
 mcp_servers:
   # Stash master data: Google Sheet "Aircraft Kits" (tabs: Aircraft Kits, Accessories, Paints).
