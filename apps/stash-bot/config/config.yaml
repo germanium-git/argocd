@@ -16,6 +16,12 @@ auxiliary:
 
 platforms:
   slack:
+    # Here instead of `/hermes sethome`: that command writes to config.yaml, which is overwritten on restart.
+    # Stops the "No home channel is set" notice on every new thread; cron results would go here.
+    home_channel:
+      platform: slack
+      chat_id: "C0CH1EFAXAP"   # #modelling
+      name: modelling
     extra:
       require_mention: true     # in channels answer only when @mentioned; DMs always
       reply_in_thread: true     # one thread per question / purchase
