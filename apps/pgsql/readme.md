@@ -1,15 +1,13 @@
 # PostgreSQL (AWX)
 
-> **Status: not in use.** This database served only AWX and was stopped on 2026-11-18 when AWX was
-> uninstalled from cluster `orange`. Its Argo CD Application is not deployed, so changes here have no effect.
+> **Status: not in use.** This database served only AWX. It was removed from cluster `orange` on 2026-11-18
+> and its data was deleted. Its Argo CD Application is not deployed, so changes here have no effect.
 
-## Restore
-
-The data is still on PVC `pgsql/data-postgres-0`, **do not delete it**.
+## Reinstall
 
 1. Deploy the application: `kubectl apply -f apps/pgsql/application.yaml`
 2. Sync `pgsql` manually in Argo CD (this app has no automatic sync).
-3. Continue with the AWX steps in [`apps/awx-operator/readme.md`](../awx-operator/readme.md#restore).
+3. Continue with the AWX steps in [`apps/awx-operator/readme.md`](../awx-operator/readme.md#reinstall).
 
 ## Overview
 
@@ -25,8 +23,6 @@ PostgreSQL for AWX, from plain manifests in `templates/` with the **official `po
 | Password | SealedSecret `templates/pgsql-awx-sealedsecret.yaml` → Secret `pgsql-awx` key `postgres-password`; same value as `awx/awx-demo-postgres-configuration` |
 | Storage | PVC `data-postgres-0`, 8Gi `nfs-atlas`, `PGDATA=/var/lib/postgresql/18/docker` |
 | Argo CD | **manual sync** (database: sync deliberately) |
-
-The old Bitnami volume `data-pgsql-awx-0` is kept for rollback; delete it once the new one is trusted.
 
 ## Access
 
