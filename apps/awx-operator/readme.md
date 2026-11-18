@@ -1,5 +1,22 @@
 # AWX-operator
 
+> **Status: not in use.** AWX was uninstalled from cluster `orange` on 2026-11-18. The manifests stay
+> here so it can be restored. Its Argo CD Application is not deployed, so changes here have no effect.
+
+## Restore
+
+Kept in the cluster for a restore, **do not delete**:
+
+- Secret `awx/awx-demo-secret-key`: decrypts the credentials stored in the AWX database.
+- PVC `pgsql/data-postgres-0`: the AWX database.
+
+Steps:
+
+1. Restore the database as described in [`apps/pgsql/readme.md`](../pgsql/readme.md#restore).
+2. Deploy the operator: `kubectl apply -f apps/awx-operator/application.yaml`
+3. Wait until the operator is running: `kubectl rollout status deployment/awx-operator-controller-manager -n awx`
+4. Create the AWX server: `kubectl apply -f apps/awx-operator/awx-demo.yaml`
+
 ## Releases
 https://github.com/ansible/awx-operator/releases
 

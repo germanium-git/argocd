@@ -1,5 +1,18 @@
 # PostgreSQL (AWX)
 
+> **Status: not in use.** This database served only AWX and was stopped on 2026-11-18 when AWX was
+> uninstalled from cluster `orange`. Its Argo CD Application is not deployed, so changes here have no effect.
+
+## Restore
+
+The data is still on PVC `pgsql/data-postgres-0`, **do not delete it**.
+
+1. Deploy the application: `kubectl apply -f apps/pgsql/application.yaml`
+2. Sync `pgsql` manually in Argo CD (this app has no automatic sync).
+3. Continue with the AWX steps in [`apps/awx-operator/readme.md`](../awx-operator/readme.md#restore).
+
+## Overview
+
 PostgreSQL for AWX, from plain manifests in `templates/` with the **official `postgres` image**
 (migrated from the Bitnami chart / `bitnami/postgresql:latest` in Nov 2026 by dump & restore).
 

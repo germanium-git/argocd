@@ -23,3 +23,10 @@ Manual sync on purpose:
 
 Application specs (`apps/*/application.yaml`) are **not** managed by Argo CD (no app-of-apps):
 after changing one, apply it with `kubectl apply -f apps/<app>/application.yaml`.
+
+## Apps kept in Git but not deployed
+
+| App | Status |
+|---|---|
+| `awx-operator` | Not in use, uninstalled on 2026-11-18. See [restore steps](apps/awx-operator/readme.md#restore). |
+| `pgsql` | Not in use, served only AWX. See [restore steps](apps/pgsql/readme.md#restore). |
