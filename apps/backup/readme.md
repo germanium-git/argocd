@@ -12,8 +12,15 @@ CronJob `backup` in namespace `backup`, every night at 02:30 Europe/Prague, pinn
 init etcd-snapshot  registry.k8s.io/etcd   etcdctl snapshot save (hostNetwork, healthcheck-client cert)
 init etcd-verify    registry.k8s.io/etcd   etcdutl snapshot status
 init collect        alpine/k8s             scripts/collect.sh  -> /staging (emptyDir)
+init rclone-bin     rclone/rclone          copies the rclone binary and config to /tools
 main restic         restic/restic          scripts/restic.sh   -> orange1:/var/backups/restic
+                                                                -> restic copy to Google Drive
 ```
+
+Off-site: `restic copy` sends the new snapshots to `rclone:gdrive:orange-backup/restic` (Google Drive,
+folder `orange-backup`, OAuth scope `drive.file`, so rclone sees only its own files). Same password,
+same retention. The job fails if that repository is over 15 GB. Drive trash is bypassed, so pruned
+data really frees the quota.
 
 What is backed up:
 
@@ -29,7 +36,8 @@ What is backed up:
 Left out on purpose: `monitoring/*`, `logging/*`, raw `*postgres*` data folders (covered by dumps),
 motionEye recordings and the ESPHome build cache (`.esphome`).
 
-Retention: 7 daily, 4 weekly, 6 monthly. On Sundays `restic check --read-data-subset=5%`.
+Retention: 7 daily, 4 weekly, 6 monthly, in both repositories. On Sundays
+`restic check --read-data-subset=5%` on both.
 Any failed step fails the job.
 
 ## Files
@@ -40,6 +48,10 @@ Any failed step fails the job.
 - `scripts/`: packed into ConfigMap `backup-scripts` by `configMapGenerator`.
 - `restic-sealedsecret.yaml`: restic repository password. The plain value is in Bitwarden,
   item **orange backup - restic password**. Without it no backup can be read.
+- `rclone-sealedsecret.yaml`: `rclone.conf` with the Google Drive token. Plain copy in Bitwarden,
+  Secure Note **orange backup - rclone config**; the OAuth client (Google Cloud project `orange-backup`)
+  is in **orange backup - google oauth client**.
+- `.gitattributes`: keeps the scripts LF on Windows checkouts (CRLF breaks them in the containers).
 
 ## Common tasks
 

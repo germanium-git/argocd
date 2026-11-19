@@ -1,0 +1,5 @@
+# Scripts are mounted into Linux containers: always LF, even on a Windows checkout
+*.sh text eol=lf
+*.py text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf

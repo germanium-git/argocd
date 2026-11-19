@@ -77,6 +77,17 @@ spec:
                   readOnly: true
                 - name: staging
                   mountPath: /staging
+            # rclone for the off-site copy: the restic image has no rclone, so its static binary is
+            # copied in, together with a writable copy of the config (rclone refreshes the token in it)
+            - name: rclone-bin
+              image: rclone/rclone:1.76.0
+              command: ["sh", "-c", "cp /usr/local/bin/rclone /tools/rclone && cp /secrets/rclone/rclone.conf /tools/rclone.conf && chmod 600 /tools/rclone.conf"]
+              volumeMounts:
+                - name: rclone-config
+                  mountPath: /secrets/rclone
+                  readOnly: true
+                - name: tools
+                  mountPath: /tools
           containers:
             - name: restic
               image: restic/restic:0.19.1
@@ -100,6 +111,8 @@ spec:
                   mountPath: /staging
                 - name: repo
                   mountPath: /repo
+                - name: tools
+                  mountPath: /tools
           volumes:
             - name: scripts
               configMap:
@@ -110,6 +123,12 @@ spec:
                 items:
                   - key: password
                     path: password
+            - name: rclone-config
+              secret:
+                secretName: rclone
+            - name: tools
+              emptyDir:
+                sizeLimit: 200Mi
             - name: pki
               hostPath:
                 path: /etc/kubernetes/pki
