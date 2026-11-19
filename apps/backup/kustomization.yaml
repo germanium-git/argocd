@@ -8,6 +8,7 @@ resources:
   - restic-sealedsecret.yaml
   - rclone-sealedsecret.yaml
   - cronjob.yaml
+  - prometheusrule.yaml
 configMapGenerator:
   # Hash suffix: a script change updates the CronJob reference automatically
   - name: backup-scripts

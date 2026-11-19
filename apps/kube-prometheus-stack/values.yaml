@@ -26,7 +26,44 @@ kube-prometheus-stack:
   alertmanager:
     service:
       type: LoadBalancer
+    ## Alerts of severity warning or critical, from all namespaces, go to Slack #alerts-k8s.
+    ## The bot token is the Argo CD notifications bot, sealed in templates/alertmanager-slack-bot-sealedsecret.yaml
+    ## and mounted via alertmanagerSpec.secrets. The bot must be a member of the channel.
+    ## inhibit_rules come from the chart defaults (Helm merges maps; route and receivers are replaced).
+    config:
+      route:
+        receiver: "null"
+        group_by: [namespace, alertname]
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 12h
+        routes:
+          - receiver: "null"
+            matchers: ['alertname =~ "Watchdog|InfoInhibitor"']
+          - receiver: slack
+            matchers: ['severity =~ "warning|critical"']
+      receivers:
+        - name: "null"
+        - name: slack
+          slack_configs:
+            - api_url: https://slack.com/api/chat.postMessage
+              http_config:
+                authorization:
+                  credentials_file: /etc/alertmanager/secrets/alertmanager-slack-bot/token
+              channel: "#alerts-k8s"
+              send_resolved: true
+              title: >-
+                [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}]
+                {{ .CommonLabels.alertname }}{{ with .CommonLabels.namespace }} in {{ . }}{{ end }}
+              text: |-
+                {{ range .Alerts -}}
+                *{{ .Labels.severity | toUpper }}* {{ with .Annotations.summary }}{{ . }}{{ else }}{{ .Annotations.message }}{{ end }}
+                {{ with .Annotations.description }}{{ . }}{{ end }}
+                {{ with .Annotations.runbook_url }}<{{ . }}|Runbook>{{ end }}
+                {{ end }}
     alertmanagerSpec:
+      secrets:
+        - alertmanager-slack-bot
       storage:
         volumeClaimTemplate:
           spec:

@@ -27,11 +27,28 @@ Other notes:
 - After an upgrade check: all targets up, no rule errors, only `Watchdog`/`InfoInhibitor` firing
   (`kubectl port-forward -n monitoring svc/kube-prometheus-stack-prometheus 9090` → `/targets`, `/rules`, `/alerts`).
 
-```
-kubectl create secret generic alertmanager-slack-notification -n monitoring \
-    --from-literal=slack_webhook=https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX \
-    --dry-run=client -o yaml | kubeseal --format=yaml > prometheus-slack-sealedsecret.yaml
-```
+## Alerting (Slack)
+
+Alerts of severity `warning` or `critical`, from all namespaces, go to Slack **#alerts-k8s**
+(`kube-prometheus-stack.alertmanager.config` in `values.yaml`). `Watchdog` and `InfoInhibitor` go nowhere.
+
+- Sent with the Argo CD notifications bot (`argocd`) through `chat.postMessage`. The bot must be a member
+  of the channel (`/invite @argocd`).
+- Token: SealedSecret `templates/alertmanager-slack-bot-sealedsecret.yaml`, mounted through
+  `alertmanagerSpec.secrets` at `/etc/alertmanager/secrets/alertmanager-slack-bot/token`. It is a copy of
+  `slack-token` in `argocd/argocd-notifications-secret`; re-seal it if that token changes:
+  ```
+  kubectl get secret argocd-notifications-secret -n argocd -o jsonpath='{.data.slack-token}' | base64 -d \
+    | kubectl create secret generic alertmanager-slack-bot -n monitoring --from-file=token=/dev/stdin \
+        --dry-run=client -o yaml | kubeseal --format yaml > templates/alertmanager-slack-bot-sealedsecret.yaml
+  ```
+- `inhibit_rules` come from the chart defaults; only `route` and `receivers` are set here.
+- Test: `kubectl port-forward -n monitoring svc/kube-prometheus-stack-alertmanager 9093`, then
+  `amtool alert add TestAlert severity=warning namespace=test --annotation=summary="test" --alertmanager.url=http://localhost:9093`.
+- Backup alerts (`BackupNotSucceeded`, ...) are defined in `apps/backup/prometheusrule.yaml`.
+
+The earlier webhook setup (`AlertmanagerConfig` for the `monitoring` namespace only, secret
+`alertmanager-slack-notification`) was removed in favour of this.
 
 ## Helm
 
