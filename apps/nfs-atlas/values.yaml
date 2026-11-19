@@ -4,8 +4,12 @@ nfs-subdir-external-provisioner:
     path: /volume1/nfs
   storageClass:
     create: true
-    defaultClass: false
+    # Matches the live cluster: nfs-atlas has been the default StorageClass since it replaced nfs-client.
+    defaultClass: true
     name: nfs-atlas
+    # Keep the data when a PVC is deleted; the PV goes to "Released" and is cleaned up by hand
+    # (see readme.md). With Retain, archiveOnDelete has no effect.
+    reclaimPolicy: Retain
     archiveOnDelete: false
   podSecurityContext:
     runAsUser: 1002       # k8s-orange user
