@@ -6,6 +6,7 @@ resources:
   - namespace.yaml
   - rbac.yaml
   - restic-sealedsecret.yaml
+  - rclone-sealedsecret.yaml
   - cronjob.yaml
 configMapGenerator:
   # Hash suffix: a script change updates the CronJob reference automatically
