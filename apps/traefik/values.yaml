@@ -20,3 +20,5 @@ traefik:
     metrics:
       expose:
         default: true
+  accessLog:
+    enabled: true
