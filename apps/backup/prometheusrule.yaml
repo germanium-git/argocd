@@ -1,0 +1,43 @@
+# Alerts for the nightly backup. A failed run is also reported by the stock KubeJobFailed alert
+# (kube-prometheus-stack); these rules catch the cases where nothing fails but nothing is backed up either.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: backup
+  namespace: backup
+  labels:
+    release: kube-prometheus-stack   # picked up by the Prometheus ruleSelector
+spec:
+  groups:
+    - name: backup
+      rules:
+        - alert: BackupNotSucceeded
+          # Nightly at 02:30, so 36 hours means at least one night was missed
+          expr: time() - kube_cronjob_status_last_successful_time{namespace="backup", cronjob="backup"} > 36 * 3600
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: No successful cluster backup for {{ $value | humanizeDuration }}
+            description: >-
+              CronJob backup/backup has not completed successfully in over 36 hours. Check the last job's log:
+              kubectl get jobs -n backup; kubectl logs -n backup job/<name> --all-containers --prefix
+            runbook_url: https://wiki.germanium.cz/bin/view/Projects/Orange%20K8s/Backup%20and%20Restore/Operations/
+        - alert: BackupCronJobMissing
+          expr: absent(kube_cronjob_info{namespace="backup", cronjob="backup"})
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: The backup CronJob does not exist
+            description: CronJob backup/backup is gone, so no backups are being made. Check the Argo CD app backup.
+            runbook_url: https://wiki.germanium.cz/bin/view/Projects/Orange%20K8s/Backup%20and%20Restore/Operations/
+        - alert: BackupCronJobSuspended
+          expr: kube_cronjob_spec_suspend{namespace="backup", cronjob="backup"} == 1
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: The backup CronJob is suspended
+            description: CronJob backup/backup has suspend=true, so no backups are being made. Resume it when the maintenance is over.
+            runbook_url: https://wiki.germanium.cz/bin/view/Projects/Orange%20K8s/Backup%20and%20Restore/Operations/
