@@ -1,0 +1,26 @@
+{
+  "apiVersion": "v1",
+  "spec": {
+    "nodeSelector": {"kubernetes.io/hostname": "orange1"},
+    "tolerations": [{"key": "node-role.kubernetes.io/control-plane", "effect": "NoSchedule"}],
+    "containers": [{
+      "name": "restic",
+      "image": "restic/restic:0.19.1",
+      "command": ["sleep", "3600"],
+      "env": [
+        {"name": "RESTIC_REPOSITORY", "value": "/repo"},
+        {"name": "RESTIC_PASSWORD_FILE", "value": "/secrets/password"}
+      ],
+      "volumeMounts": [
+        {"name": "repo", "mountPath": "/repo", "readOnly": true},
+        {"name": "password", "mountPath": "/secrets", "readOnly": true},
+        {"name": "restore", "mountPath": "/restore"}
+      ]
+    }],
+    "volumes": [
+      {"name": "repo", "hostPath": {"path": "/var/backups/restic", "type": "Directory"}},
+      {"name": "password", "secret": {"secretName": "restic"}},
+      {"name": "restore", "emptyDir": {"sizeLimit": "4Gi"}}
+    ]
+  }
+}

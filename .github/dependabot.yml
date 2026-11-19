@@ -91,6 +91,7 @@ updates:
       - "/apps/xwiki/addons"
       - "/apps/pgsql/templates"
       - "/apps/telegraf"
+      - "/apps/backup"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -106,3 +107,5 @@ updates:
       # PostgreSQL: a major upgrade needs dump/restore, never propose it automatically.
       - dependency-name: "postgres"
         update-types: ["version-update:semver-major"]
+      # etcd client image in apps/backup: keep it on the cluster's etcd version, updated with kubeadm upgrades.
+      - dependency-name: "etcd"

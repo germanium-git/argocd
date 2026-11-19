@@ -1,0 +1,96 @@
+# The backup job's permissions, each limited to what collect.sh does:
+#   - list PVs, to find the NAS folders of bound volumes
+#   - read secrets in kube-system, to export the Sealed Secrets keys (RBAC can't filter by label)
+#   - exec into the Postgres pods, to run pg_dump there
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backup
+  namespace: backup
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: backup-pv-reader
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumes"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: backup-pv-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: backup-pv-reader
+subjects:
+  - kind: ServiceAccount
+    name: backup
+    namespace: backup
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: backup-sealed-secrets-keys
+  namespace: kube-system
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backup-sealed-secrets-keys
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: backup-sealed-secrets-keys
+subjects:
+  - kind: ServiceAccount
+    name: backup
+    namespace: backup
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: backup-pg-dump
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+---
+# Bound only in the namespaces with a database to dump
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backup-pg-dump
+  namespace: paperless
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: backup-pg-dump
+subjects:
+  - kind: ServiceAccount
+    name: backup
+    namespace: backup
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backup-pg-dump
+  namespace: xwiki
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: backup-pg-dump
+subjects:
+  - kind: ServiceAccount
+    name: backup
+    namespace: backup
