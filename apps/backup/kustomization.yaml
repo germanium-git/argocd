@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# No top-level "namespace:" on purpose: rbac.yaml grants access in kube-system, paperless and xwiki,
+# and a namespace override would move those bindings into "backup". Each file sets its own namespace.
+resources:
+  - namespace.yaml
+  - rbac.yaml
+  - restic-sealedsecret.yaml
+  - cronjob.yaml
+configMapGenerator:
+  # Hash suffix: a script change updates the CronJob reference automatically
+  - name: backup-scripts
+    namespace: backup
+    files:
+      - scripts/collect.sh
+      - scripts/sqlite_copy.py
+      - scripts/restic.sh

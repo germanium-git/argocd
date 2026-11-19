@@ -1,0 +1,129 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: backup
+  namespace: backup
+spec:
+  schedule: "30 2 * * *"
+  timeZone: Europe/Prague
+  concurrencyPolicy: Forbid
+  # A run missed by more than an hour (e.g. node down) is skipped; the next night runs normally
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 7200
+      template:
+        metadata:
+          labels:
+            app: backup
+        spec:
+          serviceAccountName: backup
+          restartPolicy: Never
+          # etcd and /etc/kubernetes/pki only exist on the control-plane node, and the local
+          # repository lives on its NVMe, so everything runs on orange1
+          nodeSelector:
+            kubernetes.io/hostname: orange1
+          tolerations:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+              effect: NoSchedule
+          # etcd only listens on the node's own addresses
+          hostNetwork: true
+          dnsPolicy: ClusterFirstWithHostNet
+          initContainers:
+            - name: etcd-snapshot
+              image: registry.k8s.io/etcd:3.6.8-0
+              command:
+                - etcdctl
+                - --endpoints=https://127.0.0.1:2379
+                - --cacert=/etc/kubernetes/pki/etcd/ca.crt
+                - --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt
+                - --key=/etc/kubernetes/pki/etcd/healthcheck-client.key
+                - snapshot
+                - save
+                - /staging/etcd-snapshot.db
+              volumeMounts:
+                - name: pki
+                  mountPath: /etc/kubernetes/pki
+                  readOnly: true
+                - name: staging
+                  mountPath: /staging
+            - name: etcd-verify
+              image: registry.k8s.io/etcd:3.6.8-0
+              command: ["etcdutl", "snapshot", "status", "/staging/etcd-snapshot.db", "--write-out=table"]
+              volumeMounts:
+                - name: staging
+                  mountPath: /staging
+            - name: collect
+              image: alpine/k8s:1.36.6
+              command: ["bash", "/scripts/collect.sh"]
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  memory: 512Mi
+              volumeMounts:
+                - name: scripts
+                  mountPath: /scripts
+                - name: pki
+                  mountPath: /host-pki
+                  readOnly: true
+                - name: nfs
+                  mountPath: /nfs
+                  readOnly: true
+                - name: staging
+                  mountPath: /staging
+          containers:
+            - name: restic
+              image: restic/restic:0.19.1
+              command: ["sh", "/scripts/restic.sh"]
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  memory: 1Gi
+              volumeMounts:
+                - name: scripts
+                  mountPath: /scripts
+                - name: restic-password
+                  mountPath: /secrets/restic
+                  readOnly: true
+                - name: nfs
+                  mountPath: /nfs
+                  readOnly: true
+                - name: staging
+                  mountPath: /staging
+                - name: repo
+                  mountPath: /repo
+          volumes:
+            - name: scripts
+              configMap:
+                name: backup-scripts
+            - name: restic-password
+              secret:
+                secretName: restic
+                items:
+                  - key: password
+                    path: password
+            - name: pki
+              hostPath:
+                path: /etc/kubernetes/pki
+                type: Directory
+            - name: repo
+              hostPath:
+                path: /var/backups/restic
+                type: DirectoryOrCreate
+            # The whole NAS export, read-only; collect.sh picks the folders to back up
+            - name: nfs
+              nfs:
+                server: 172.31.1.6
+                path: /volume1/nfs
+                readOnly: true
+            - name: staging
+              emptyDir:
+                sizeLimit: 2Gi
