@@ -48,9 +48,18 @@ Any failed step fails the job.
 kubectl create job --from=cronjob/backup -n backup backup-manual-$(date +%s)
 kubectl logs -n backup -f job/<name> --all-containers --prefix
 
-# List snapshots (on orange1, password from Bitwarden)
-sudo restic -r /var/backups/restic snapshots
+# Look into the repository: helper pod on orange1 with the repository mounted read-only
+# (restic needs --no-lock for that). It stops by itself after an hour.
+kubectl run restic-shell -n backup --restart=Never --image=restic/restic:0.19.1 \
+  --overrides="$(cat apps/backup/tools/restic-shell.json)"
+kubectl exec -n backup restic-shell -- restic --no-lock --no-cache snapshots
+kubectl exec -n backup restic-shell -- restic --no-lock --no-cache ls latest /staging/data
+kubectl exec -n backup restic-shell -- restic --no-lock --no-cache restore latest --target /restore --include <path>
+kubectl cp backup/restic-shell:/restore/<path> ./<file>
+kubectl delete pod -n backup restic-shell
 ```
+
+`tools/` is not part of the kustomization, so Argo CD doesn't deploy it.
 
 The `registry.k8s.io/etcd` tag must match the cluster's etcd version; Dependabot ignores it.
 Update it after a `kubeadm upgrade`.
