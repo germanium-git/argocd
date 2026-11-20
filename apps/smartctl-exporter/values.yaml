@@ -1,0 +1,72 @@
+prometheus-smartctl-exporter:
+  # Runs privileged on every node (the chart default tolerates all taints, so orange1 is included)
+  # and reads the NVMe SMART data through /dev.
+  fullnameOverride: smartctl-exporter
+  # The chart's RBAC only binds a PodSecurityPolicy role, which does not exist since Kubernetes 1.25
+  rbac:
+    create: false
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 128Mi
+
+  serviceMonitor:
+    enabled: true
+    extraLabels:
+      release: kube-prometheus-stack   # picked up by the Prometheus serviceMonitorSelector
+    # Label every series with the node it came from, so alerts say "orange1" and not a pod IP
+    relabelings:
+      - sourceLabels: [__meta_kubernetes_pod_node_name]
+        targetLabel: node
+
+  prometheusRules:
+    enabled: true
+    extraLabels:
+      release: kube-prometheus-stack   # picked up by the Prometheus ruleSelector
+    rules:
+      # The Orange Pi M.2 slot runs fewer PCIe lanes than the disks support, so this would always fire
+      smartCTLDInterfaceSlow:
+        enabled: false
+
+      # Wear: "Percentage Used" is the vendor's estimate of rated endurance consumed. 100% is not
+      # a failure, but past it the disk is out of its guaranteed life. orange1 was at 45% on 2026-11-20.
+      nvmeWearHigh:
+        enabled: true
+        alert: NvmeWearHigh
+        expr: smartctl_device_percentage_used >= 80
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: "NVMe on {{ $labels.node }} has used {{ $value }}% of its rated endurance"
+          description: >-
+            Plan a replacement disk for {{ $labels.node }} ({{ $labels.device }}). On orange1 the nightly
+            etcd snapshot and the backup repository are what a rebuild needs.
+          runbook_url: https://wiki.germanium.cz/bin/view/Projects/Orange%20K8s/Backup%20and%20Restore/Operations/
+      nvmeWearCritical:
+        enabled: true
+        alert: NvmeWearCritical
+        expr: smartctl_device_percentage_used >= 95
+        for: 1h
+        labels:
+          severity: critical
+        annotations:
+          summary: "NVMe on {{ $labels.node }} has used {{ $value }}% of its rated endurance"
+          description: Replace the disk in {{ $labels.node }} ({{ $labels.device }}) soon.
+          runbook_url: https://wiki.germanium.cz/bin/view/Projects/Orange%20K8s/Backup%20and%20Restore/Operations/
+
+      # Without data the wear alerts can never fire, so a node that stops reporting is an alert too
+      nvmeHealthMissing:
+        enabled: true
+        alert: NvmeHealthMissing
+        expr: >-
+          (count(kube_node_info) - count(smartctl_device_percentage_used)) > 0
+          or absent(smartctl_device_percentage_used)
+        for: 1h
+        labels:
+          severity: warning
+        annotations:
+          summary: Some nodes report no NVMe health data
+          description: Check the smartctl-exporter pods in namespace monitoring (kubectl get pods -n monitoring -l app.kubernetes.io/name=prometheus-smartctl-exporter -o wide).
