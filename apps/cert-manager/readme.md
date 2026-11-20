@@ -47,4 +47,7 @@ Create two ClusterIssures for having the certificates signed by Let's Encrypt st
 `addons/germanium-certificate-prod.yaml` issues the wildcard certificate for *germanium.cz* and **.germanium.cz* (secret `default/germanium-cz-prod-tls`).
 The Traefik gateways `traefik-gateway-tls` and `traefik-gateway-tls-tunnel` use it for every HTTPS route, so apps don't need certificates of their own.
 
+`addons/certificate-atlas.yaml` issues the certificate for the UGREEN NAS *atlas.germanium.cz* (secret `default/atlas-tls`).
+UGOS can't pull it from the cluster, so after each renewal it is exported with `atlas/export-atlas-cert.sh` and imported by hand. See [atlas/RENEWAL.md](atlas/RENEWAL.md).
+
 The staging and `*.local.germanium.cz` certificates, and the per-app certificates, were removed in 2026-11 because nothing used them.
