@@ -10,14 +10,15 @@ Let's Encrypt certificate issued by cert-manager (DNS-01, ClusterIssuer
 | Secret | `default/atlas-tls` |
 | Current cert | issued 2026-11-20, expires 2027-02-18 |
 
-cert-manager renews the **Secret** automatically, but UGOS has no API or CLI for
-importing certificates, so the **import into the NAS is manual** after every
-renewal (roughly every 60 days).
+cert-manager renews the **Secret** automatically. UGOS has no API for
+certificates, so after every renewal (roughly every 60 days) the new cert has
+to be pushed to the NAS: either with `export-atlas-cert.sh --upload` over SSH,
+or by hand in the UGOS UI.
 
 ## When
 
 cert-manager renews ~30 days before expiry (next: around **2027-01-19**).
-After that, import the new cert into UGOS before the old one expires.
+After that, install the new cert on the NAS before the old one expires.
 
 Check the state:
 
@@ -26,19 +27,50 @@ kubectl get certificate atlas -n default -o wide
 ./export-atlas-cert.sh   # also tells you whether the NAS still serves an older cert
 ```
 
-## Steps
+## Option 1: upload over SSH (preferred)
 
-1. Run the script from WSL:
+```bash
+cd apps/cert-manager/atlas
+./export-atlas-cert.sh --upload
+```
 
-   ```bash
-   cd apps/cert-manager/atlas
-   ./export-atlas-cert.sh
-   ```
+The script checks the Certificate is Ready, then pipes the cert and key over
+`ssh atlas` into [`install-on-nas.sh`](install-on-nas.sh), which runs as root
+on the NAS and:
 
-   It checks the Certificate is Ready, prints the expiry date and writes
-   `atlas.fullchain.crt`, `atlas.crt`, `intermediate.crt` and `atlas.key` to
-   the Windows Downloads folder (`DEST=/path` overrides the folder).
-2. In UGOS: **Control Panel → Security → Certificate → Add → Import**.
+1. validates the new cert (hostname, key match, not expired); exits without
+   changes if the NAS already has it (`--force` reinstalls anyway),
+2. backs up the current files to `/ugreen/.config/ssl-backup/<timestamp>/`
+   (keeps the last 5),
+3. replaces `/ugreen/.config/ssl/certs/atlas.germanium.cz/{cert.pem,privkey.pem}`
+   (full chain + key; this is what nginx serves on 9443),
+4. updates the expiry for atlas.germanium.cz in `/ugreen/.config/ssl/certcache.json`
+   (what the UI's certificate list shows),
+5. runs `nginx -t` and `systemctl reload nginx`, rolling back to the backup if
+   either fails.
+
+Finally it checks that port 9443 serves the new serial.
+
+Requirements:
+
+- `ssh atlas` works without a password: `~/.ssh/config` entry with
+  `User petr` and `IdentityFile ~/.ssh/orangePiMac`, which is the key in
+  `~petr/.ssh/authorized_keys` on the NAS. Override with `NAS_SSH=...`.
+- `petr` has passwordless `sudo` on the NAS (`sudo -n` must work).
+- The certificate must have been imported once via the UI, so that the
+  `certs/atlas.germanium.cz` folder exists and `ssl.json` maps the web server to it.
+
+The file layout is UGOS-internal and was checked on UGOS Pro (Debian 12) on
+2026-11-20. After a firmware update, re-run the script: if the layout changed,
+it stops before touching anything or fails the final serial check. In that
+case, use option 2.
+
+## Option 2: manual import in the UGOS UI
+
+1. Run `./export-atlas-cert.sh` (no arguments). It writes `atlas.fullchain.crt`,
+   `atlas.crt`, `intermediate.crt` and `atlas.key` to the Windows Downloads
+   folder (`DEST=/path` overrides it).
+2. UGOS: **Control Panel → Security → Certificate → Add → Import**.
    - Certificate: `atlas.crt` (or `atlas.fullchain.crt` if there's no intermediate field)
    - Private key: `atlas.key`
    - Intermediate certificate: `intermediate.crt` (if the field exists)
@@ -56,8 +88,17 @@ openssl s_client -connect atlas.germanium.cz:9443 -servername atlas.germanium.cz
 openssl s_client -connect atlas.germanium.cz:9443 -servername atlas.germanium.cz -showcerts </dev/null
 ```
 
-The serial must match the one the script printed. Re-running the script should
-report "NAS already serves this certificate".
+The serial must match the one the script printed.
+
+## Rollback
+
+```bash
+ssh atlas
+sudo ls /ugreen/.config/ssl-backup/
+sudo cp -a /ugreen/.config/ssl-backup/<timestamp>/{cert.pem,privkey.pem} /ugreen/.config/ssl/certs/atlas.germanium.cz/
+sudo cp -a /ugreen/.config/ssl-backup/<timestamp>/certcache.json /ugreen/.config/ssl/
+sudo nginx -t && sudo systemctl reload nginx
+```
 
 ## Gotcha: Chrome still shows "Not secure"
 
