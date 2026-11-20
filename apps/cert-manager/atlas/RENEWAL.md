@@ -23,9 +23,17 @@ After that, install the new cert on the NAS before the old one expires.
 Check the state:
 
 ```bash
-kubectl get certificate atlas -n default -o wide
-./export-atlas-cert.sh   # also tells you whether the NAS still serves an older cert
+cd apps/cert-manager/atlas
+./export-atlas-cert.sh --check
 ```
+
+`--check` writes nothing. It prints the cert's expiry and when cert-manager will
+renew it, then compares the serial the NAS serves with the cluster's. Exit codes:
+`0` the NAS is up to date, `2` the NAS serves an older cert (run `--upload`),
+`3` the NAS is unreachable, `1` any other error.
+
+Don't use a plain run (no options) as a status check: it writes the private
+key to Downloads.
 
 ## Option 1: upload over SSH (preferred)
 
