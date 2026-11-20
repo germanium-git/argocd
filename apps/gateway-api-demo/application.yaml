@@ -15,6 +15,9 @@ spec:
   project: default
   source:
     path: apps/gateway-api-demo
+    directory:
+      # Istio and Envoy Gateway are not deployed (removed 2026-11-20); their routes stay in Git
+      exclude: '{httproute-envoy.yaml,httproute-istio.yaml}'
     repoURL: https://github.com/germanium-git/argocd
     targetRevision: HEAD
   syncPolicy:
