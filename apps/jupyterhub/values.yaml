@@ -11,9 +11,11 @@ jupyterhub:
       runAsNonRoot: true
       fsGroup: 1000
   
-  # proxy:
-  #   annotations:
-  #     argocd.argoproj.io/health: "Healthy"
+  # HTTPS via Traefik: templates/httproute.yaml routes jupyter.germanium.cz to proxy-public.
+  # No LoadBalancer IP any more (it served plain HTTP on 172.31.1.38).
+  proxy:
+    service:
+      type: ClusterIP
 
 
   prePuller:
