@@ -5,9 +5,13 @@
 #   - install it on the NAS over SSH (--upload).
 #
 # Usage:
-#   ./export-atlas-cert.sh                 # write files to Windows Downloads
+#   ./export-atlas-cert.sh --check         # status only: is the NAS up to date? writes nothing
 #   ./export-atlas-cert.sh --upload        # install on the NAS over SSH, reload nginx
 #   ./export-atlas-cert.sh --upload --force  # reinstall even if the NAS has this cert
+#   ./export-atlas-cert.sh                 # write files (incl. private key) to Windows Downloads
+#
+# --check exit codes: 0 NAS serves the current cert, 2 NAS serves an older cert
+# (run --upload), 3 NAS unreachable, 1 any other error.
 #
 # Environment:
 #   DEST=/some/dir   write somewhere other than Downloads (download mode)
@@ -36,8 +40,10 @@ usage() { sed -n '2,/^set -euo/{/^set -euo/d;s/^# \{0,1\}//;p}' "${BASH_SOURCE[0
 
 UPLOAD=0
 FORCE=0
+CHECK=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --check)  CHECK=1 ;;
     --upload) UPLOAD=1 ;;
     --force)  FORCE=1 ;;
     -h|--help) usage; exit 0 ;;
@@ -46,13 +52,15 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 [[ $FORCE -eq 1 && $UPLOAD -eq 0 ]] && die "--force only makes sense with --upload"
+[[ $CHECK -eq 1 && $UPLOAD -eq 1 ]] && die "--check and --upload are mutually exclusive"
 
 for cmd in kubectl openssl awk base64; do
   command -v "$cmd" >/dev/null || die "'$cmd' not found in PATH"
 done
 
 # --- Destination: Windows Downloads folder (download mode only) ---------------
-if [[ $UPLOAD -eq 0 && -z "${DEST:-}" ]]; then
+DOWNLOAD=$(( UPLOAD == 0 && CHECK == 0 ))
+if [[ $DOWNLOAD -eq 1 && -z "${DEST:-}" ]]; then
   win_user="${WIN_USER:-}"
   if [[ -z "$win_user" ]] && command -v cmd.exe >/dev/null; then
     win_user="$(cd /mnt/c && cmd.exe /c 'echo %USERNAME%' 2>/dev/null | tr -d '\r')"
@@ -60,7 +68,7 @@ if [[ $UPLOAD -eq 0 && -z "${DEST:-}" ]]; then
   [[ -n "$win_user" ]] || die "cannot determine Windows user; set WIN_USER or DEST"
   DEST="/mnt/c/Users/${win_user}/Downloads"
 fi
-[[ $UPLOAD -eq 1 || -d "$DEST" ]] || die "destination folder does not exist: $DEST"
+[[ $DOWNLOAD -eq 0 || -d "$DEST" ]] || die "destination folder does not exist: $DEST"
 
 # --- 1. Certificate must be Ready ---------------------------------------------
 info "Checking Certificate ${NAMESPACE}/${CERT_NAME}"
@@ -109,6 +117,23 @@ served_serial() {
   timeout 10 openssl s_client -connect "${HOST}:${PORT}" -servername "$HOST" </dev/null 2>/dev/null \
     | openssl x509 -noout -serial 2>/dev/null | cut -d= -f2 || true
 }
+
+# --- 3. Check: compare with what the NAS serves, write nothing -----------------
+if [[ $CHECK -eq 1 ]]; then
+  renewal="$(kubectl get certificate "$CERT_NAME" -n "$NAMESPACE" -o jsonpath='{.status.renewalTime}' || true)"
+  info "cert-manager renews at: ${renewal:-unknown}"
+  live="$(served_serial)"
+  if [[ -z "$live" ]]; then
+    warn "could not reach https://${HOST}:${PORT}"
+    exit 3
+  elif [[ "$live" == "$serial" ]]; then
+    info "OK: NAS serves the current certificate - nothing to do"
+    exit 0
+  else
+    info "NAS serves an older certificate (serial $live) - run: $0 --upload"
+    exit 2
+  fi
+fi
 
 # --- 3a. Upload: install on the NAS over SSH ------------------------------------
 if [[ $UPLOAD -eq 1 ]]; then
