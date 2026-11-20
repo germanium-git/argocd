@@ -19,10 +19,6 @@ spec:
       valueFiles:
       - values.yaml
 
-  - repoURL: https://github.com/germanium-git/argocd/
-    path: apps/home-assistant/addons
-    targetRevision: main
-
   destination:
     namespace: homeassist
     server: https://kubernetes.default.svc
