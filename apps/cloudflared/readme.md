@@ -11,7 +11,7 @@ It forwards every `*.germanium.cz` request that reaches the tunnel to Traefik
 | Replicas | 2, on different nodes, PodDisruptionBudget `minAvailable: 1` |
 | Image | `cloudflare/cloudflared`, pinned, updated by Dependabot |
 | Config | `config.yaml` (ConfigMap with hash suffix, a change restarts the pods) |
-| Credentials | Secret `argo-tunnel-settings`, key `tunnel-config.json` (created by hand, **not in Git**; copy in Bitwarden) |
+| Credentials | Secret `argo-tunnel-settings`, key `tunnel-config.json` (created by hand, **not in Git**; keep a copy in Bitwarden) |
 | Tunnel and Access apps | Terraform, `germanium-git/cloudflare-zero-trust` |
 
 Cloudflare supports a cloudflared version for one year after its release; older ones show as
@@ -28,7 +28,7 @@ Cloudflare supports a cloudflared version for one year after its release; older 
 
 ## Recreating the credentials Secret
 
-The credentials file comes from `cloudflared tunnel create` (or the dashboard) and is in Bitwarden.
+The credentials file comes from `cloudflared tunnel create` (or the dashboard); keep a copy in Bitwarden.
 
 ```bash
 kubectl create secret generic argo-tunnel-settings -n cloudflare \
