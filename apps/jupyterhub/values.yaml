@@ -10,6 +10,23 @@ jupyterhub:
     podSecurityContext:
       runAsNonRoot: true
       fsGroup: 1000
+
+    # Real accounts instead of the chart's default DummyAuthenticator (which let anyone log in with
+    # any name and password). Users sign up at /hub/signup; the admin approves them at /hub/authorize.
+    # Passwords are stored hashed in the hub database (PVC hub-db-dir). Each user gets a volume
+    # claim-<username>.
+    config:
+      JupyterHub:
+        authenticator_class: native
+      Authenticator:
+        admin_users:
+          - petr
+      NativeAuthenticator:
+        open_signup: false              # new accounts wait for admin approval
+        minimum_password_length: 12
+        check_common_password: true     # reject the most common passwords
+        allowed_failed_logins: 5        # then block the account for 10 minutes
+        seconds_before_next_try: 600
   
   # HTTPS via Traefik: templates/httproute.yaml routes jupyter.germanium.cz to proxy-public.
   # No LoadBalancer IP any more (it served plain HTTP on 172.31.1.38).
