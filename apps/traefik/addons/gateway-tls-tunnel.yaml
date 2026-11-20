@@ -6,14 +6,20 @@
 # external-dns only reads the `target` override from the Gateway itself
 # (never from HTTPRoute), so apps whose DNS must point at the tunnel
 # instead of the MetalLB IP need their HTTPRoutes attached here rather
-# than to traefik-gateway-tls.
+# than to traefik-gateway-tls. Each HTTPRoute must also carry
+# external-dns.kubernetes.io/cloudflare-proxied: "true" (a tunnel CNAME only
+# works proxied). external-dns >= 0.2x reads only the external-dns.kubernetes.io/
+# prefix; the old external-dns.alpha.kubernetes.io/ annotations are ignored.
+# All HTTPS sites are attached here (remote access through the tunnel, behind
+# Cloudflare Access). On the LAN the SRX300 DNS proxy answers these names with
+# the local Traefik IP 172.31.1.34 (static dns-proxy cache entries).
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: traefik-gateway-tls-tunnel
   namespace: traefik
   annotations:
-    external-dns.alpha.kubernetes.io/target: "f14686c6-e006-4076-9b65-a84d93aa2e01.cfargotunnel.com"
+    external-dns.kubernetes.io/target: "f14686c6-e006-4076-9b65-a84d93aa2e01.cfargotunnel.com"
 spec:
   gatewayClassName: traefik
   listeners:

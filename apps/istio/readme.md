@@ -3,8 +3,8 @@
 > **Not deployed.** Removed from the cluster on 2026-11-20: it only served the `gwapidemo-istio`
 > smoke test, Traefik is the only gateway in use, and its leader election added about 0.6 etcd
 > writes per second on orange1. The code is kept for reference; Dependabot ignores this chart.
-> To deploy it again: `kubectl apply -f apps/istio/application.yaml`, then remove
-> `httproute-istio.yaml` from the exclude list in `apps/gateway-api-demo/application.yaml`.
+> To deploy it again: `kubectl apply -f apps/istio/application.yaml`. The `gateway-api-demo` app
+> (with `httproute-istio.yaml`) was deleted on 2026-11-20; recover it from Git history if needed.
 
 Istio installed in **Gateway API mode only** — no service mesh, no sidecar injection,
 no `istio-ingressgateway` workload. This is purely an evaluation of Istio as a second

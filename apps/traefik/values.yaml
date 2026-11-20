@@ -11,7 +11,7 @@ traefik:
   gateway:
     enabled: true
     annotations:
-      external-dns.alpha.kubernetes.io/target: "172.31.1.34"
+      external-dns.kubernetes.io/target: "172.31.1.34"
     listeners:
       web:
         namespacePolicy:

@@ -86,13 +86,22 @@ kube-prometheus-stack:
       existingSecret: grafana-admin
       userKey: admin-user
       passwordKey: admin-password
+    # HTTPRoute on the Cloudflare Tunnel gateway (remote via the tunnel behind Cloudflare
+    # Access, LAN via the SRX300 DNS entry grafana.germanium.cz -> 172.31.1.34).
+    # TLS uses the germanium.cz wildcard cert on the gateway.
     ingress:
-      enabled: true
-      hosts:
-      - grafana.germanium.cz
-      ingressClassName: traefik
-      tls:
-       - secretName: grafana-germanium-cz-prod-tls
+      enabled: false
+    route:
+      main:
+        enabled: true
+        annotations:
+          external-dns.kubernetes.io/cloudflare-proxied: "true"
+        hostnames:
+          - grafana.germanium.cz
+        parentRefs:
+          - name: traefik-gateway-tls-tunnel
+            namespace: traefik
+            sectionName: websecure
     additionalDataSources:
     - name: loki-gateway
       access: proxy
