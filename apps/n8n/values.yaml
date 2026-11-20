@@ -1,5 +1,9 @@
 n8n:
-  encryptionKey: "702a8b1640741fb75099a74d7a0d792c"
+  # The key encrypts the credentials n8n stores. It comes from SealedSecret
+  # addons/n8n-encryption-key-sealedsecret.yaml (Secret n8n-encryption-key, key N8N_ENCRYPTION_KEY).
+  # It was rotated on 2026-11-20 because the previous key was in this public repo; a copy of the
+  # new key is in Bitwarden ("n8n encryption key"). Losing it makes stored credentials unreadable.
+  existingEncryptionKeySecret: n8n-encryption-key
 
   timezone: Europe/Prague
 
