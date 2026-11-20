@@ -14,7 +14,9 @@ n8n:
 
   main:
     extraEnvVars:
-      N8N_TRUST_PROXY: "true"
+      # Traefik is the one proxy in front of n8n; lets the login rate limiter trust X-Forwarded-For.
+      # (N8N_TRUST_PROXY, used before, is not an n8n setting.)
+      N8N_PROXY_HOPS: "1"
       # The chart derived this from the Ingress; set it explicitly now that n8n uses an HTTPRoute
       N8N_EDITOR_BASE_URL: "https://n8n.germanium.cz"
 
