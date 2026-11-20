@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: smartctl-exporter
+  namespace: argocd
+  annotations:
+    notifications.argoproj.io/subscribe.on-deployed.slack: argo
+    notifications.argoproj.io/subscribe.on-health-degraded.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-failed.slack: argo
+    notifications.argoproj.io/subscribe.on-sync-status-unknown.slack: argo
+spec:
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    helm:
+      releaseName: smartctl-exporter
+      valueFiles:
+      - values.yaml
+    path: apps/smartctl-exporter
+    repoURL: https://github.com/germanium-git/argocd
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
