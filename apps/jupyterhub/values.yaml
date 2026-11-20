@@ -28,5 +28,10 @@ jupyterhub:
         storageClass: nfs-atlas
 
   scheduling:
+    # The user scheduler packs user pods onto as few nodes as possible, for autoscaling clusters.
+    # Not useful on 3 fixed nodes; its 2 replicas renewed a lease every 2 s (about 0.5 etcd writes/s).
+    # User pods and the placeholder use the default scheduler instead.
+    userScheduler:
+      enabled: false
     userPlaceholder:
       replicas: 1

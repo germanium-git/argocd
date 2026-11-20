@@ -15,3 +15,7 @@ nfs-subdir-external-provisioner:
     runAsUser: 1002       # k8s-orange user
     runAsGroup: 1000      # k8s-nfs-group
     fsGroup: 1000         # k8s-nfs-group
+  # One replica with the Recreate strategy, so there is never a second provisioner to elect against.
+  # Leader election renewed an Endpoints object every 2 s, about 0.5 etcd writes/s on orange1.
+  leaderElection:
+    enabled: false
