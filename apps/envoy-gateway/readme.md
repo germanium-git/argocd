@@ -1,5 +1,11 @@
 # envoy-gateway
 
+> **Not deployed.** Removed from the cluster on 2026-11-20: it only served the `gwapidemo-envoy`
+> smoke test, Traefik is the only gateway in use, and its leader election added about 0.5 etcd
+> writes per second on orange1. The code is kept for reference; Dependabot ignores this chart.
+> To deploy it again: `kubectl apply -f apps/envoy-gateway/application.yaml`, then remove
+> `httproute-envoy.yaml` from the exclude list in `apps/gateway-api-demo/application.yaml`.
+
 Envoy Gateway installed as a second/third Gateway API engine alongside Traefik and
 Istio, purely for evaluation.
 

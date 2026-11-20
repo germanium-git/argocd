@@ -6,11 +6,16 @@ evaluation.
 
 **Namespace:** `gw-api-demo`
 
-| Engine | URL | HTTPRoute | Gateway |
-|--------|-----|-----------|---------|
-| Traefik | https://gwapidemo.germanium.cz | `httproute-http.yaml`, `httproute-https.yaml` | `traefik/traefik-gateway(-tls)` |
-| Istio | http://gwapidemo-istio.germanium.cz | `httproute-istio.yaml` | `istio-system/istio-gateway` (`apps/istio/addons/gateway.yaml`) |
-| Envoy Gateway | http://gwapidemo-envoy.germanium.cz | `httproute-envoy.yaml` | `envoy-gateway-system/envoy-gateway` (`apps/envoy-gateway/addons/gateway.yaml`) |
+| Engine | URL | HTTPRoute | Gateway | Status |
+|--------|-----|-----------|---------|--------|
+| Traefik | https://gwapidemo.germanium.cz | `httproute-http.yaml`, `httproute-https.yaml` | `traefik/traefik-gateway(-tls)` | deployed |
+| Istio | http://gwapidemo-istio.germanium.cz | `httproute-istio.yaml` | `istio-system/istio-gateway` (`apps/istio/addons/gateway.yaml`) | **not deployed** |
+| Envoy Gateway | http://gwapidemo-envoy.germanium.cz | `httproute-envoy.yaml` | `envoy-gateway-system/envoy-gateway` (`apps/envoy-gateway/addons/gateway.yaml`) | **not deployed** |
+
+> **Istio and Envoy Gateway are not deployed** (removed from the cluster on 2026-11-20 to cut etcd
+> writes on orange1; Traefik is the only gateway in use). `httproute-istio.yaml` and
+> `httproute-envoy.yaml` are excluded in `application.yaml` (`directory.exclude`). To bring an engine
+> back, deploy its app first, then remove its file from the exclude list.
 
 The Istio and Envoy Gateway routes are plain HTTP smoke tests (no TLS termination,
 no filters) — just enough to confirm each engine actually routes traffic. See
