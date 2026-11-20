@@ -3,9 +3,16 @@ n8n:
 
   timezone: Europe/Prague
 
+  # SQLite on an NFS volume: never run two n8n pods at once. With RollingUpdate the new pod
+  # can't open the database (SQLITE_PROTOCOL) while the old one holds it, and the rollout hangs.
+  strategy:
+    type: Recreate
+
   main:
     extraEnvVars:
       N8N_TRUST_PROXY: "true"
+      # The chart derived this from the Ingress; set it explicitly now that n8n uses an HTTPRoute
+      N8N_EDITOR_BASE_URL: "https://n8n.germanium.cz"
 
     persistence:
       enabled: true
