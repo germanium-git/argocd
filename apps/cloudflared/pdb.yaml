@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: cloudflared-k8s-ingress
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: cloudflared-k8s-ingress

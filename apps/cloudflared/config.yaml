@@ -1,0 +1,14 @@
+# Locally managed tunnel "k8s-ingress" (Terraform: cloudflare-zero-trust/tunnels.tf, config_src = "local").
+# Every *.germanium.cz hostname with a proxied DNS record pointing at the tunnel reaches Traefik.
+# Each such hostname must have a Cloudflare Access application (cloudflare-zero-trust/access_applications.tf),
+# otherwise it is open to the internet.
+tunnel: f14686c6-e006-4076-9b65-a84d93aa2e01
+credentials-file: /etc/cloudflared/creds/tunnel-config.json
+no-autoupdate: true
+metrics: 0.0.0.0:2000
+ingress:
+  - hostname: "*.germanium.cz"
+    service: https://traefik.traefik.svc.cluster.local:443
+    originRequest:
+      noTLSVerify: true
+  - service: http_status:404

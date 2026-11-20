@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cloudflare
+resources:
+  - deployment.yaml
+  - pdb.yaml
+configMapGenerator:
+  # Hash suffix: a config change rolls the pods automatically
+  - name: cloudflared-k8s-ingress
+    files:
+      - config.yaml

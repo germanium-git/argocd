@@ -97,6 +97,7 @@ updates:
       - "/apps/pgsql/templates"
       - "/apps/telegraf"
       - "/apps/backup"
+      - "/apps/cloudflared"
     schedule:
       interval: "weekly"
       day: "monday"
