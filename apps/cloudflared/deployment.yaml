@@ -1,0 +1,82 @@
+# cloudflared connector for the "k8s-ingress" tunnel. Plain manifest instead of a Helm chart: the
+# community chart insists on the account certificate (cert.pem), which can create and delete tunnels
+# and is not needed to run one. The tunnel credentials stay in the existing Secret
+# argo-tunnel-settings (created by hand, not in Git).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflared-k8s-ingress
+  labels:
+    app: cloudflared-k8s-ingress
+spec:
+  # Two connectors on different nodes: the tunnel stays up while a node reboots
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cloudflared-k8s-ingress
+  template:
+    metadata:
+      labels:
+        app: cloudflared-k8s-ingress
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: cloudflared-k8s-ingress
+              topologyKey: kubernetes.io/hostname
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        sysctls:
+          # lets cloudflared send ICMP (used by "cloudflared tunnel diag" and WARP ping)
+          - name: net.ipv4.ping_group_range
+            value: "0 2147483647"
+      containers:
+        - name: cloudflared
+          image: cloudflare/cloudflared:2026.11.1
+          args: ["tunnel", "--config", "/etc/cloudflared/config/config.yaml", "run"]
+          ports:
+            - name: metrics
+              containerPort: 2000
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: metrics
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: metrics
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 48Mi
+            limits:
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/cloudflared/config
+              readOnly: true
+            - name: creds
+              mountPath: /etc/cloudflared/creds
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: cloudflared-k8s-ingress
+        - name: creds
+          secret:
+            secretName: argo-tunnel-settings
+            defaultMode: 0440
