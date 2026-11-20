@@ -44,9 +44,7 @@ Create two ClusterIssures for having the certificates signed by Let's Encrypt st
 
 ## Certificates
 
-Try to create a certificates for **.germanium.cz* and **.local.germanium.cz*. by using the following manifests.
+`addons/germanium-certificate-prod.yaml` issues the wildcard certificate for *germanium.cz* and **.germanium.cz* (secret `default/germanium-cz-prod-tls`).
+The Traefik gateways `traefik-gateway-tls` and `traefik-gateway-tls-tunnel` use it for every HTTPS route, so apps don't need certificates of their own.
 
-- germanium-certificate-prod.yaml
-- germanium-certificate-staging.yaml
-- local-certificate-prod.yaml
-- local-certificate-staging.yaml
+The staging and `*.local.germanium.cz` certificates, and the per-app certificates, were removed in 2026-11 because nothing used them.
