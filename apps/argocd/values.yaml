@@ -1,4 +1,8 @@
 argo-cd:
+  # Base URL of Argo CD: used for argocd-cm "url" (SSO callbacks, CLI) and for the links in Slack
+  # notifications ({{.context.argocdUrl}}). Without it the chart uses https://argocd.example.com.
+  global:
+    domain: argocd.germanium.cz
   applicationSet:
     certificate:
       domain: argocd.germanium.cz
