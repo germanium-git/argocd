@@ -1,7 +1,9 @@
-# Telegraf (SNMP → InfluxDB on apollo)
+# Telegraf (SNMP → InfluxDB Cloud)
 
-Polls SNMP and writes to InfluxDB 2 on **apollo** (`https://apollo.germanium.cz:8086`, org `Germanium`,
-bucket `Network`; Oracle Cloud VM from `germanium-git/temp-monitor`). Moved here from Flux (`orange-k8s`) in Nov 2026.
+Polls SNMP and writes to **InfluxDB Cloud 2** (`https://westeurope-1.azure.cloud2.influxdata.com`, org ID
+`15297d32235a99a0`, bucket `Network`, 30-day retention). The bucket and the write-only `telegraf` token are managed
+in `germanium-git/influxdb-cloud` (Terraform). Until Nov 2026 it wrote to the self-hosted InfluxDB on apollo
+(`germanium-git/temp-monitor`). Moved here from Flux (`orange-k8s`) in Nov 2026.
 
 | Agent | Device | Data |
 |---|---|---|
@@ -15,10 +17,15 @@ bucket `Network`; Oracle Cloud VM from `germanium-git/temp-monitor`). Moved here
   `/usr/share/snmp/mibs` (gosmi translator). Only the MIBs the config needs (IF-MIB and its imports) are kept;
   `sysName.0` is read via `SNMPv2-MIB` (same OID as RFC1213-MIB). Adding a MIB: drop it in `mibs/` and list it
   in `kustomization.yaml`. No hostPath / per-node copies any more.
-- `telegraf-sealedsecret.yaml` → Secret `telegraf-secrets` (`INFLUXDB_TOKEN`). Re-seal:
-  `kubectl create secret generic telegraf-secrets -n telegraf --from-literal=INFLUXDB_TOKEN=... --dry-run=client -o yaml | kubeseal --format yaml > telegraf-sealedsecret.yaml`
-- TLS to InfluxDB is verified (`insecure_skip_verify = false`); apollo's cert is renewed by certbot with a
-  deploy hook that copies it to InfluxDB and restarts it.
+- `telegraf-sealedsecret.yaml` → Secret `telegraf-secrets` (`INFLUXDB_TOKEN`, the write-only `telegraf` token from
+  `germanium-git/influxdb-cloud`). Re-seal straight from the Terraform output (the token is never printed), run in
+  this directory:
+  ```bash
+  (cd ../../../influxdb-cloud && terraform output -json writer_tokens) | jq -r .telegraf \
+    | { read -r T; kubectl create secret generic telegraf-secrets -n telegraf --from-literal=INFLUXDB_TOKEN="$T" --dry-run=client -o yaml; } \
+    | kubeseal --format yaml > telegraf-sealedsecret.yaml
+  ```
+- TLS to InfluxDB Cloud is verified (`insecure_skip_verify = false`).
 
 ## Monitoring
 
