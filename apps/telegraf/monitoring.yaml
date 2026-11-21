@@ -30,7 +30,7 @@ spec:
             severity: warning
           annotations:
             summary: Telegraf cannot write SNMP metrics to InfluxDB
-            description: Writes to https://apollo.germanium.cz:8086 have been failing for 15+ minutes. Check InfluxDB on apollo (service, /data mount, TLS cert).
+            description: Writes to InfluxDB Cloud (westeurope-1.azure.cloud2.influxdata.com, bucket Network) have been failing for 15+ minutes. Check `kubectl -n telegraf logs deploy/telegraf-deployment`. 401 = token (re-seal from germanium-git/influxdb-cloud, then restart the deployment; env vars are only read at pod start), 429/413 = Free plan write limits.
         - alert: TelegrafSNMPGatherErrors
           expr: sum(increase(internal_gather_errors{namespace="telegraf",input="snmp"}[15m])) > 0
           for: 30m
