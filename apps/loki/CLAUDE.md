@@ -7,9 +7,11 @@ Grafana Loki log aggregation stack deployed on the home Orange Pi 5 Kubernetes c
 - **ArgoCD application**: `loki` (namespace: `argocd`)
 - **Deployed to namespace**: `logging`
 - **Repo**: `https://github.com/germanium-git/argocd`, path `apps/loki`, branch `main`
-- **Helm chart**: `grafana/loki` v6.44.0, wrapped in an umbrella chart at this directory
+- **Helm chart**: `grafana/loki` v7.7.0, wrapped in an umbrella chart at this directory
 - **Deployment mode**: SingleBinary (single pod handles reads and writes)
-- **Loki version**: 3.5.7 (appVersion in Chart.yaml)
+- **Loki version**: 3.6.11 (`appVersion` in Chart.yaml is informational only; the image tag comes
+  from the upstream chart's `loki.image.tag` default. Dependabot bumps only the dependency version,
+  so update `appVersion` by hand when the rendered `grafana/loki` image changes)
 
 To apply changes: commit and push to `main` — ArgoCD syncs automatically.
 To force a sync without waiting: `kubectl annotate application loki -n argocd argocd.argoproj.io/refresh=hard`
@@ -58,6 +60,6 @@ ssh orange3 "df -h /var/log"
 helm dep update apps/loki/
 
 # Helm upgrade directly (bypasses ArgoCD — use only for emergencies)
-helm upgrade loki grafana/loki --version 6.44.0 --namespace logging \
+helm upgrade loki grafana/loki --version 7.7.0 --namespace logging \
   --reuse-values --kubeconfig ~/.kube/config-files/orange-backup.yaml
 ```
