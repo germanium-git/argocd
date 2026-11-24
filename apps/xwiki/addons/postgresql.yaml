@@ -14,13 +14,12 @@ spec:
       labels:
         app: xwiki-postgres
     spec:
-      # Run as the image's postgres user (70) from the start: the entrypoint's root -> su-exec
-      # switch would drop supplementary groups. GID 1000 (k8s-nfs-group) is what the NAS
-      # share ACL grants read/write to.
+      # The NAS share ACL only grants k8s-nfs-group (GID 1000). It must be the primary group:
+      # atlas runs nfsd with manage-gids, which replaces the client's supplementary groups
+      # with the NAS's own lookup for UID 70 (none).
       securityContext:
         runAsUser: 70
-        runAsGroup: 70
-        supplementalGroups: [1000]
+        runAsGroup: 1000
       containers:
         - name: postgres
           image: postgres:17-alpine
