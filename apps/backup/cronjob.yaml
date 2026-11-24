@@ -90,7 +90,7 @@ spec:
                   mountPath: /tools
           containers:
             - name: restic
-              image: restic/restic:0.19.1
+              image: restic/restic:0.20.0
               command: ["sh", "/scripts/restic.sh"]
               resources:
                 requests:
