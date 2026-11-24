@@ -14,6 +14,13 @@ spec:
       labels:
         app: xwiki-postgres
     spec:
+      # Run as the image's postgres user (70) from the start: the entrypoint's root -> su-exec
+      # switch would drop supplementary groups. GID 1000 (k8s-nfs-group) is what the NAS
+      # share ACL grants read/write to.
+      securityContext:
+        runAsUser: 70
+        runAsGroup: 70
+        supplementalGroups: [1000]
       containers:
         - name: postgres
           image: postgres:17-alpine
