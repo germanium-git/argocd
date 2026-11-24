@@ -28,6 +28,8 @@ To force a sync without waiting: `kubectl annotate application loki -n argocd ar
 - **PVC**: `storage-loki-0`, 10 Gi, storageClass `nfs-atlas` (cluster default)
 - **Storage type**: filesystem (local, not object storage)
 - **Retention**: 168h (7 days), defined in `limits_config.retention_period`
+- **NFS access**: `loki.podSecurityContext.runAsGroup: 1000` is required — the NAS share ACL only
+  grants GID 1000 and nfsd's manage-gids drops supplementary groups, so `fsGroup` alone won't do
 
 ## Key configuration decisions
 

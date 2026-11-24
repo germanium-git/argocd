@@ -1,6 +1,10 @@
 loki:
   deploymentMode: SingleBinary
   loki:
+    # The NAS share ACL only grants k8s-nfs-group (GID 1000), and atlas's nfsd (manage-gids)
+    # ignores client supplementary groups, so it must be the primary group
+    podSecurityContext:
+      runAsGroup: 1000
     auth_enabled: false
     commonConfig:
       replication_factor: 1
