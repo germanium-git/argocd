@@ -26,6 +26,18 @@ Check the value of the secret.
 kubectl get secret --namespace argocd argocd-notifications-secret -o jsonpath="{.data.slack-token}" | base64 -d
 ```
 
+### Renewing the Slack token
+
+Run `apps/argocd/renew-secrets.sh` from the repo root in your own terminal. It reads the token with
+hidden input, so don't run it via Claude Code's `!`. It needs `kubectl`, `kubeseal` and `gh` logged in.
+
+It walks you through the Slack UI (app **argocd** → OAuth & Permissions → reissue the token) and
+checks the new token with Slack's `auth.test` API. It then re-seals it into
+`addons/argocd-notification-sealedsecret.yaml` **and** into the Alertmanager copy
+`../kube-prometheus-stack/templates/alertmanager-slack-bot-sealedsecret.yaml`, opens a PR and waits
+until the new value is live. It also restarts `argocd-notifications-controller`.
+The `argocd` app syncs manually: after the merge, sync it in the UI while the script is waiting.
+
 ## Web UI
 
 Navigate to https://argocd.germanium.cz/
