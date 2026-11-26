@@ -42,6 +42,7 @@ Alerts of severity `warning` or `critical`, from all namespaces, go to Slack **#
     | kubectl create secret generic alertmanager-slack-bot -n monitoring --from-file=token=/dev/stdin \
         --dry-run=client -o yaml | kubeseal --format yaml > templates/alertmanager-slack-bot-sealedsecret.yaml
   ```
+  When you renew the token with `apps/argocd/renew-secrets.sh`, it re-seals this copy too.
 - `inhibit_rules` come from the chart defaults; only `route` and `receivers` are set here.
 - Test: `kubectl port-forward -n monitoring svc/kube-prometheus-stack-alertmanager 9093`, then
   `amtool alert add TestAlert severity=warning namespace=test --annotation=summary="test" --alertmanager.url=http://localhost:9093`.
